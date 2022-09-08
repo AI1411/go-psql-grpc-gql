@@ -2,9 +2,7 @@ name: Run unit tests
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+
 jobs:
   test:
     name: Unit Test
@@ -18,7 +16,7 @@ jobs:
           POSTGRES_PASSWORD: root
           POSTGRES_DB: go_pg
         ports:
-          - 15432:5432
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
