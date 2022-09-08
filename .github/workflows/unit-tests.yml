@@ -1,0 +1,49 @@
+---
+name: go-test
+on:
+  push:
+
+jobs:
+  build:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    container: golang:1.18.5
+    services:
+      mysql-rigel:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: root
+        ports:
+          - 15432:5432
+    env:
+      TZ: 'Asia/Tokyo'
+
+    steps:
+      # DB の初期化前に migration が実行される時があるのでsleepしている。
+      - name: sleep
+        run: sleep 5s
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - name: module install
+        run: go install github.com/kyoh86/richgo@latest
+
+      - name: Get dependencies
+        run: |
+          go get -v -t -d ./...
+          if [ -f Gopkg.toml ]; then
+              curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+              dep ensure
+          fi
+          apt-get update \
+          && apt-get install --no-install-recommends -y \
+              jq
+      - name: Set up DB migrations
+        run: |
+          curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.0/migrate.linux-amd64.tar.gz | tar xvz
+          sudo mv ./migrate.linux-amd64 /usr/bin/migrate
+          make migrate
+      - name: Test
+        run: |
+          go test ./... -v
