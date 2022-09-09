@@ -2,12 +2,15 @@ package main
 
 import (
 	"context"
+	"os"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/require"
 
 	"github.com/AI1411/go-pg-ci-example/db"
+	"github.com/AI1411/go-pg-ci-example/env"
 )
 
 type test struct {
@@ -46,7 +49,17 @@ var exampleTestCases = []struct {
 }
 
 func TestExample(t *testing.T) {
-	client, err := db.NewClient()
+	if err := godotenv.Load(".env.testing"); err != nil {
+		panic("Error loading .env file")
+	}
+	e := &env.Env{
+		Hostname: os.Getenv("GOPG_HOSTNAME"),
+		Port:     os.Getenv("GOPG_PORT"),
+		User:     os.Getenv("GOPG_USERNAME"),
+		Password: os.Getenv("GOPG_PASSWORD"),
+		Dbname:   os.Getenv("GOPG_DATABASE"),
+	}
+	client, err := db.NewClient(e)
 	require.NoError(t, err)
 	ctx := context.Background()
 	for _, tt := range exampleTestCases {

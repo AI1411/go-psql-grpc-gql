@@ -12,11 +12,11 @@ jobs:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_USER: root
-          POSTGRES_PASSWORD: root
-          POSTGRES_DB: go_pg
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: go_pg_test
         ports:
-          - 5432:5432
+          - 25432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
