@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log"
 	"os"
 	"testing"
 
@@ -59,6 +60,7 @@ func TestExample(t *testing.T) {
 		Password: os.Getenv("GOPG_PASSWORD"),
 		Dbname:   os.Getenv("GOPG_DATABASE"),
 	}
+	log.Printf("env: %+v", e)
 	client, err := db.NewClient(e)
 	require.NoError(t, err)
 	ctx := context.Background()

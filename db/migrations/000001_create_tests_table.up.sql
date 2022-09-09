@@ -1,4 +1,4 @@
-create table public.tests
+create table if not exists public.tests
 (
     id   serial PRIMARY KEY,
     name varchar(64) not null
