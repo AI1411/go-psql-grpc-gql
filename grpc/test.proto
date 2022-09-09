@@ -1,0 +1,58 @@
+syntax = 'proto3';
+
+option go_package = "/grpc";
+
+package test.v1;
+
+service TestService {
+  rpc CreateTest (CreateTestRequest) returns (CreateTestResponse) {}
+  rpc GetTest (GetTestRequest) returns (GetTestResponse) {}
+  rpc UpdateTest (UpdateTestRequest) returns (UpdateTestResponse) {}
+  rpc DeleteTest (DeleteTestRequest) returns (DeleteTestResponse) {}
+  rpc ListTest (ListTestRequest) returns (ListTestResponse) {}
+}
+
+message CreateTestRequest {
+  string name = 1;
+}
+
+message CreateTestResponse {
+  uint32 id = 1;
+  string name = 2;
+}
+
+message GetTestRequest {
+  uint32 id = 1;
+}
+
+message GetTestResponse {
+  uint32 id = 1;
+  string name = 2;
+}
+
+message UpdateTestRequest {
+  uint32 id = 1;
+  string name = 2;
+}
+
+message UpdateTestResponse {
+  uint32 id = 1;
+  string name = 2;
+}
+
+message DeleteTestRequest {
+  uint32 id = 1;
+}
+
+message DeleteTestResponse {
+  uint32 id = 1;
+}
+
+message ListTestRequest {
+  uint32 id = 1;
+  string name = 2;
+}
+
+message ListTestResponse {
+  repeated GetTestResponse tests = 1;
+}
