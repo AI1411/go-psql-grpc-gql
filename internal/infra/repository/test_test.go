@@ -74,7 +74,7 @@ var listTestTestcases = []struct {
 	},
 }
 
-func TestListTest(t *testing.T) {
+func testListTest(t *testing.T) {
 	ctx, client := initializeForRepositoryTest(t)
 
 	for _, tt := range listTestTestcases {
@@ -95,4 +95,8 @@ func TestListTest(t *testing.T) {
 		)
 
 	}
+}
+
+func TestAllTestcaseOfTest(t *testing.T) {
+	testListTest(t)
 }
