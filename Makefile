@@ -3,5 +3,8 @@ migrate:
 migrate-for-test:
 	migrate -path db/migrations -database "postgresql://postgres:postgres@127.0.0.1:25432/go_pg_test?sslmode=disable" -verbose up
 
-gen-user-proto:
+gen-test-proto:
 	protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative grpc/test.proto
+
+test:
+	richgo test -v ./...

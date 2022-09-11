@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="go_pg@localhost" uuid="a086e116-6965-4ad1-a83a-ffb888b49564">
+    <data-source source="LOCAL" name="go_pg@localhost" uuid="abcf490e-a5e8-45ba-8b61-9037f381e9c6">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://localhost:15432/go_pg</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="go_pg_test@localhost" uuid="0928dc24-2d04-4253-a92c-72053c299259">
+    <data-source source="LOCAL" name="go_pg_test@localhost" uuid="5837e4cf-d0ea-49a4-aa62-3feaa55b1d43">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>

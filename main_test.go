@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"log"
 	"os"
 	"testing"
 
@@ -12,6 +11,7 @@ import (
 
 	"github.com/AI1411/go-pg-ci-example/db"
 	"github.com/AI1411/go-pg-ci-example/env"
+	"github.com/AI1411/go-pg-ci-example/internal/infra/logger"
 )
 
 type test struct {
@@ -50,7 +50,7 @@ var exampleTestCases = []struct {
 }
 
 func TestExample(t *testing.T) {
-	if err := godotenv.Load(".env.testing"); err != nil {
+	if err := godotenv.Load("env/.env.testing"); err != nil {
 		panic("Error loading .env file")
 	}
 	e := &env.Env{
@@ -60,8 +60,8 @@ func TestExample(t *testing.T) {
 		Password: os.Getenv("GOPG_PASSWORD"),
 		Dbname:   os.Getenv("GOPG_DATABASE"),
 	}
-	log.Printf("env: %+v", e)
-	client, err := db.NewClient(e)
+	zapLogger, _ := logger.NewLogger(true)
+	client, err := db.NewClient(e, zapLogger)
 	require.NoError(t, err)
 	ctx := context.Background()
 	for _, tt := range exampleTestCases {

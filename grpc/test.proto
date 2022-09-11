@@ -49,7 +49,7 @@ message DeleteTestResponse {
 }
 
 message ListTestRequest {
-  uint32 id = 1;
+  optional uint32 id = 1;
   string name = 2;
 }
 

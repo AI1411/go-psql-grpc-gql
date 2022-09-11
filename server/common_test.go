@@ -1,20 +1,22 @@
-package main
+package server
 
 import (
-	"context"
 	"os"
 
 	"github.com/joho/godotenv"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/test/bufconn"
 
 	"github.com/AI1411/go-pg-ci-example/db"
 	"github.com/AI1411/go-pg-ci-example/env"
+	pb "github.com/AI1411/go-pg-ci-example/grpc"
 	"github.com/AI1411/go-pg-ci-example/internal/infra/logger"
-	"github.com/AI1411/go-pg-ci-example/server"
+	"github.com/AI1411/go-pg-ci-example/internal/infra/repository"
 )
 
-func main() {
-	// get env
-	if err := godotenv.Load("env/.env"); err != nil {
+func initializeForServerTest() {
+	lis = bufconn.Listen(BufSize)
+	if err := godotenv.Load(".env.testing"); err != nil {
 		panic("Error loading .env file")
 	}
 	e := &env.Env{
@@ -26,8 +28,13 @@ func main() {
 	}
 	zapLogger, _ := logger.NewLogger(true)
 	client, _ := db.NewClient(e, zapLogger)
-
-	client.Conn(context.Background()).Exec(`SELECT * FROM public.tests;`)
-
-	server.Handler(e, zapLogger)
+	s := grpc.NewServer()
+	pb.RegisterTestServiceServer(s, &server{
+		r: repository.NewTestRepository(client),
+	})
+	go func() {
+		if err := s.Serve(lis); err != nil {
+			panic(err)
+		}
+	}()
 }

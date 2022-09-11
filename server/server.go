@@ -5,24 +5,27 @@ import (
 	"log"
 	"net"
 
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
+	"github.com/AI1411/go-pg-ci-example/db"
+	"github.com/AI1411/go-pg-ci-example/env"
 	pb "github.com/AI1411/go-pg-ci-example/grpc"
+	"github.com/AI1411/go-pg-ci-example/internal/infra/repository"
 )
 
 type server struct {
 	pb.UnimplementedTestServiceServer
+	r *repository.TestRepository
 }
 
 func (s *server) ListTest(ctx context.Context, in *pb.ListTestRequest) (*pb.ListTestResponse, error) {
-	log.Printf("Received: %v", in)
+	res, err := s.r.ListTest(ctx, in)
+	if err != nil {
+		return nil, err
+	}
 	return &pb.ListTestResponse{
-		Tests: []*pb.GetTestResponse{
-			{
-				Id:   1,
-				Name: in.Name,
-			},
-		},
+		Tests: res,
 	}, nil
 }
 
@@ -52,14 +55,18 @@ func (s *server) DeleteTest(ctx context.Context, in *pb.DeleteTestRequest) (*pb.
 	}, nil
 }
 
-func Handler() {
+func Handler(e *env.Env, zapLogger *zap.Logger) {
 	addr := ":50051"
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	pb.RegisterTestServiceServer(s, &server{})
+	dbClient, err := db.NewClient(e, zapLogger)
+	testRepo := repository.NewTestRepository(dbClient)
+	pb.RegisterTestServiceServer(s, &server{
+		r: testRepo,
+	})
 
 	log.Printf("Listening on %s", addr)
 
