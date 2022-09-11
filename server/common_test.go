@@ -29,9 +29,8 @@ func initializeForServerTest() {
 	zapLogger, _ := logger.NewLogger(true)
 	client, _ := db.NewClient(e, zapLogger)
 	s := grpc.NewServer()
-	pb.RegisterTestServiceServer(s, &server{
-		r: repository.NewTestRepository(client),
-	})
+	testRepo := repository.NewTestRepository(client)
+	pb.RegisterTestServiceServer(s, NewTestServer(testRepo))
 	go func() {
 		if err := s.Serve(lis); err != nil {
 			panic(err)
