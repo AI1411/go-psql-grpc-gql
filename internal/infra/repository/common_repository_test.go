@@ -28,7 +28,7 @@ func initializeForRepositoryTest(t *testing.T) (context.Context, *db.Client) {
 		Password: os.Getenv("GOPG_PASSWORD"),
 		Dbname:   os.Getenv("GOPG_DATABASE"),
 	}
-	zapLogger, _ := logger.NewLogger(true)
+	zapLogger, _ := logger.NewLogger(false)
 	client, err := db.NewClient(e, zapLogger)
 	require.NoError(t, err)
 

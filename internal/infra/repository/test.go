@@ -2,6 +2,11 @@ package repository
 
 import (
 	"context"
+	"errors"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	"gorm.io/gorm"
 
 	"github.com/AI1411/go-pg-ci-example/db"
 	"github.com/AI1411/go-pg-ci-example/grpc"
@@ -31,7 +36,7 @@ func (r *TestRepository) ListTest(
 	baseQuery = addWhereEq(baseQuery, "id", in.Id)
 	if err := baseQuery.
 		Find(&tests).Error; err != nil {
-		return nil, err
+		return nil, status.Error(codes.Internal, "failed to get test list")
 	}
 
 	res := make([]*grpc.GetTestResponse, len(tests))
@@ -42,4 +47,18 @@ func (r *TestRepository) ListTest(
 		}
 	}
 	return res, nil
+}
+
+func (r *TestRepository) GetTest(ctx context.Context, request *grpc.GetTestRequest) (*grpc.GetTestResponse, error) {
+	var test Test
+	if err := r.dbClient.Conn(ctx).Where("id = ?", request.Id).First(&test).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, status.Error(codes.NotFound, "test not found")
+		}
+		return nil, status.Error(codes.Internal, "failed to get test")
+	}
+	return &grpc.GetTestResponse{
+		Id:   test.ID,
+		Name: test.Name,
+	}, nil
 }

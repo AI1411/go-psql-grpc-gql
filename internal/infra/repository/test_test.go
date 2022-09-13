@@ -2,10 +2,13 @@ package repository
 
 import (
 	"context"
+	"log"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/AI1411/go-pg-ci-example/db"
 	"github.com/AI1411/go-pg-ci-example/grpc"
@@ -57,7 +60,7 @@ var listTestTestcases = []struct {
 	},
 	{
 		id:   3,
-		name: "Nameで検索<TID:2>",
+		name: "Nameで検索<TID:3>",
 		in: &grpc.ListTestRequest{
 			Name: "test2",
 		},
@@ -97,6 +100,74 @@ func testListTest(t *testing.T) {
 	}
 }
 
+var getTestTestcases = []struct {
+	id        int
+	name      string
+	in        *grpc.GetTestRequest
+	want      *grpc.GetTestResponse
+	wantError error
+	setup     func(ctx context.Context, t *testing.T, client *db.Client)
+}{
+	{
+		id:   1,
+		name: "テスト詳細正常系<TID:1>",
+		in: &grpc.GetTestRequest{
+			Id: 1,
+		},
+		want: &grpc.GetTestResponse{
+			Id:   1,
+			Name: "test1",
+		},
+		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tests ("id", "name") VALUES (DEFAULT, 'test1');`).Error)
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tests ("id", "name") VALUES (DEFAULT, 'test2');`).Error)
+		},
+	},
+	{
+		id:   2,
+		name: "テスト詳細異常系 対象が見つからない場合、NotFoundエラーになること<TID:2>",
+		in: &grpc.GetTestRequest{
+			Id: 3,
+		},
+		wantError: status.Error(codes.NotFound, "test not found"),
+		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tests ("id", "name") VALUES (DEFAULT, 'test1');`).Error)
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tests ("id", "name") VALUES (DEFAULT, 'test2');`).Error)
+		},
+	},
+}
+
+func testGetTest(t *testing.T) {
+	ctx, client := initializeForRepositoryTest(t)
+
+	for _, tt := range getTestTestcases {
+		tt := tt
+		t.Run(
+			tt.name, func(t *testing.T) {
+				initDBForTests(context.Background(), t, client)
+				if tt.setup != nil {
+					tt.setup(ctx, t, client)
+				}
+
+				repo := NewTestRepository(client)
+				got, err := repo.GetTest(ctx, tt.in)
+
+				log.Printf("wantError: %v", tt.wantError)
+				log.Printf("err: %v", err)
+				if tt.wantError != nil {
+					assert.Error(t, tt.wantError, err)
+				}
+
+				if tt.want != nil {
+					assert.Equal(t, tt.want, got)
+				}
+			},
+		)
+
+	}
+}
+
 func TestAllTestcaseOfTest(t *testing.T) {
 	testListTest(t)
+	testGetTest(t)
 }

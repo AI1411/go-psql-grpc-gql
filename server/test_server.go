@@ -30,10 +30,15 @@ func (s *testServer) ListTest(ctx context.Context, in *pb.ListTestRequest) (*pb.
 }
 
 func (s *testServer) GetTest(ctx context.Context, in *pb.GetTestRequest) (*pb.GetTestResponse, error) {
-	log.Printf("Received: %v", in)
-	return &pb.GetTestResponse{
-		Id: in.Id,
-	}, nil
+	test, err := s.r.GetTest(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	res := &pb.GetTestResponse{
+		Id:   test.Id,
+		Name: test.Name,
+	}
+	return res, nil
 }
 
 func (s *testServer) CreateTest(ctx context.Context, in *pb.CreateTestRequest) (*pb.CreateTestResponse, error) {
