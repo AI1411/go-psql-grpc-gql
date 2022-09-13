@@ -62,3 +62,16 @@ func (r *TestRepository) GetTest(ctx context.Context, request *grpc.GetTestReque
 		Name: test.Name,
 	}, nil
 }
+
+func (r *TestRepository) CreateTest(ctx context.Context, request *grpc.CreateTestRequest) (*grpc.CreateTestResponse, error) {
+	test := Test{
+		Name: request.Name,
+	}
+	if err := r.dbClient.Conn(ctx).Create(&test).Error; err != nil {
+		return nil, status.Error(codes.Internal, "failed to create test")
+	}
+	return &grpc.CreateTestResponse{
+		Id:   test.ID,
+		Name: test.Name,
+	}, nil
+}

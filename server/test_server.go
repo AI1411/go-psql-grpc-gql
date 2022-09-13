@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"log"
 
 	pb "github.com/AI1411/go-pg-ci-example/grpc"
 	"github.com/AI1411/go-pg-ci-example/internal/infra/repository"
@@ -42,9 +41,12 @@ func (s *testServer) GetTest(ctx context.Context, in *pb.GetTestRequest) (*pb.Ge
 }
 
 func (s *testServer) CreateTest(ctx context.Context, in *pb.CreateTestRequest) (*pb.CreateTestResponse, error) {
-	log.Printf("Received: %v", in)
+	test, err := s.r.CreateTest(ctx, in)
+	if err != nil {
+		return nil, err
+	}
 	return &pb.CreateTestResponse{
-		Name: in.Name,
+		Name: test.Name,
 	}, nil
 }
 

@@ -167,7 +167,57 @@ func testGetTest(t *testing.T) {
 	}
 }
 
+var createTestTestcases = []struct {
+	id        int
+	name      string
+	in        *grpc.CreateTestRequest
+	want      *grpc.CreateTestResponse
+	wantError error
+	setup     func(ctx context.Context, t *testing.T, client *db.Client)
+}{
+	{
+		id:   1,
+		name: "テスト作成正常系<TID:1>",
+		in: &grpc.CreateTestRequest{
+			Name: "test",
+		},
+		want: &grpc.CreateTestResponse{
+			Id:   1,
+			Name: "test",
+		},
+	},
+}
+
+func testCreateTest(t *testing.T) {
+	ctx, client := initializeForRepositoryTest(t)
+
+	for _, tt := range createTestTestcases {
+		tt := tt
+		t.Run(
+			tt.name, func(t *testing.T) {
+				initDBForTests(context.Background(), t, client)
+				if tt.setup != nil {
+					tt.setup(ctx, t, client)
+				}
+
+				repo := NewTestRepository(client)
+				got, err := repo.CreateTest(ctx, tt.in)
+
+				if tt.wantError != nil {
+					assert.Error(t, tt.wantError, err)
+				}
+
+				if tt.want != nil {
+					assert.Equal(t, tt.want, got)
+				}
+			},
+		)
+
+	}
+}
+
 func TestAllTestcaseOfTest(t *testing.T) {
 	testListTest(t)
 	testGetTest(t)
+	testCreateTest(t)
 }
