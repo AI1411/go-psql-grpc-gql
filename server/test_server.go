@@ -46,6 +46,7 @@ func (s *TestServer) CreateTest(ctx context.Context, in *pb.CreateTestRequest) (
 		return nil, err
 	}
 	return &pb.CreateTestResponse{
+		Id:   test.Id,
 		Name: test.Name,
 	}, nil
 }
