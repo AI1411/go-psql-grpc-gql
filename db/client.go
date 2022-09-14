@@ -8,7 +8,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
-	"github.com/AI1411/go-pg-ci-example/env"
+	"github.com/AI1411/go-psql_grpc_gql/env"
 )
 
 type Client struct {

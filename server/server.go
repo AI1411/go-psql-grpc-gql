@@ -7,10 +7,10 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
-	"github.com/AI1411/go-pg-ci-example/db"
-	"github.com/AI1411/go-pg-ci-example/env"
-	pb "github.com/AI1411/go-pg-ci-example/grpc"
-	"github.com/AI1411/go-pg-ci-example/internal/infra/repository"
+	"github.com/AI1411/go-psql_grpc_gql/db"
+	"github.com/AI1411/go-psql_grpc_gql/env"
+	pb "github.com/AI1411/go-psql_grpc_gql/grpc/test"
+	"github.com/AI1411/go-psql_grpc_gql/internal/infra/repository"
 )
 
 func Handler(e *env.Env, zapLogger *zap.Logger) {

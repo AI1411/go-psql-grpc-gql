@@ -10,9 +10,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/AI1411/go-pg-ci-example/db"
-	"github.com/AI1411/go-pg-ci-example/grpc"
-	"github.com/AI1411/go-pg-ci-example/internal/helper"
+	"github.com/AI1411/go-psql_grpc_gql/db"
+	"github.com/AI1411/go-psql_grpc_gql/grpc/test"
+	"github.com/AI1411/go-psql_grpc_gql/internal/helper"
 )
 
 var listTestTestcases = []struct {

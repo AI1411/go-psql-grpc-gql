@@ -8,8 +8,8 @@ import (
 	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
 
-	"github.com/AI1411/go-pg-ci-example/db"
-	"github.com/AI1411/go-pg-ci-example/grpc"
+	"github.com/AI1411/go-psql_grpc_gql/db"
+	"github.com/AI1411/go-psql_grpc_gql/grpc/test"
 )
 
 type Test struct {

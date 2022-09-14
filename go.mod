@@ -1,4 +1,4 @@
-module github.com/AI1411/go-pg-ci-example
+module github.com/AI1411/go-psql_grpc_gql
 
 go 1.19
 

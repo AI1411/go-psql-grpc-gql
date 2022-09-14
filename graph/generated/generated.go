@@ -13,7 +13,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/AI1411/go-pg-ci-example/graph/model"
+	"github.com/AI1411/go-psql_grpc_gql/graph/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )

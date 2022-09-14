@@ -7,9 +7,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/AI1411/go-pg-ci-example/graph/generated"
-	"github.com/AI1411/go-pg-ci-example/graph/model"
-	"github.com/AI1411/go-pg-ci-example/grpc"
+	"github.com/AI1411/go-psql_grpc_gql/graph/generated"
+	"github.com/AI1411/go-psql_grpc_gql/graph/model"
+	"github.com/AI1411/go-psql_grpc_gql/grpc/test"
 )
 
 // CreateTest is the resolver for the createTest field.

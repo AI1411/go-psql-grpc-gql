@@ -1,7 +1,7 @@
 package graph
 
 import (
-	"github.com/AI1411/go-pg-ci-example/server"
+	"github.com/AI1411/go-psql_grpc_gql/server"
 )
 
 // This file will not be regenerated automatically.

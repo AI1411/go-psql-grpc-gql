@@ -9,13 +9,13 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/joho/godotenv"
 
-	"github.com/AI1411/go-pg-ci-example/db"
-	"github.com/AI1411/go-pg-ci-example/env"
-	"github.com/AI1411/go-pg-ci-example/graph"
-	"github.com/AI1411/go-pg-ci-example/graph/generated"
-	"github.com/AI1411/go-pg-ci-example/internal/infra/logger"
-	"github.com/AI1411/go-pg-ci-example/internal/infra/repository"
-	"github.com/AI1411/go-pg-ci-example/server"
+	"github.com/AI1411/go-psql_grpc_gql/db"
+	"github.com/AI1411/go-psql_grpc_gql/env"
+	"github.com/AI1411/go-psql_grpc_gql/graph"
+	"github.com/AI1411/go-psql_grpc_gql/graph/generated"
+	"github.com/AI1411/go-psql_grpc_gql/internal/infra/logger"
+	"github.com/AI1411/go-psql_grpc_gql/internal/infra/repository"
+	"github.com/AI1411/go-psql_grpc_gql/server"
 )
 
 const defaultPort = "8080"

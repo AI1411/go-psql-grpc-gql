@@ -5,7 +5,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/AI1411/go-pg-ci-example/internal/helper"
+	"github.com/AI1411/go-psql_grpc_gql/internal/helper"
 )
 
 func addWhereEq(query *gorm.DB, columnName string, value interface{}) *gorm.DB {

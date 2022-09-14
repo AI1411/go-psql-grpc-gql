@@ -3,8 +3,8 @@ package server
 import (
 	"context"
 
-	pb "github.com/AI1411/go-pg-ci-example/grpc"
-	"github.com/AI1411/go-pg-ci-example/internal/infra/repository"
+	pb "github.com/AI1411/go-psql_grpc_gql/grpc/test"
+	"github.com/AI1411/go-psql_grpc_gql/internal/infra/repository"
 )
 
 type TestServer struct {

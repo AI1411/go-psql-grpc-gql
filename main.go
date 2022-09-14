@@ -6,10 +6,10 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"github.com/AI1411/go-pg-ci-example/db"
-	"github.com/AI1411/go-pg-ci-example/env"
-	"github.com/AI1411/go-pg-ci-example/internal/infra/logger"
-	"github.com/AI1411/go-pg-ci-example/server"
+	"github.com/AI1411/go-psql_grpc_gql/db"
+	"github.com/AI1411/go-psql_grpc_gql/env"
+	"github.com/AI1411/go-psql_grpc_gql/internal/infra/logger"
+	"github.com/AI1411/go-psql_grpc_gql/server"
 )
 
 func main() {
