@@ -7,18 +7,18 @@ import (
 	"github.com/AI1411/go-pg-ci-example/internal/infra/repository"
 )
 
-type testServer struct {
+type TestServer struct {
 	pb.UnimplementedTestServiceServer
 	r *repository.TestRepository
 }
 
-func NewTestServer(r *repository.TestRepository) *testServer {
-	return &testServer{
+func NewTestServer(r *repository.TestRepository) *TestServer {
+	return &TestServer{
 		r: r,
 	}
 }
 
-func (s *testServer) ListTest(ctx context.Context, in *pb.ListTestRequest) (*pb.ListTestResponse, error) {
+func (s *TestServer) ListTest(ctx context.Context, in *pb.ListTestRequest) (*pb.ListTestResponse, error) {
 	res, err := s.r.ListTest(ctx, in)
 	if err != nil {
 		return nil, err
@@ -28,7 +28,7 @@ func (s *testServer) ListTest(ctx context.Context, in *pb.ListTestRequest) (*pb.
 	}, nil
 }
 
-func (s *testServer) GetTest(ctx context.Context, in *pb.GetTestRequest) (*pb.GetTestResponse, error) {
+func (s *TestServer) GetTest(ctx context.Context, in *pb.GetTestRequest) (*pb.GetTestResponse, error) {
 	test, err := s.r.GetTest(ctx, in)
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func (s *testServer) GetTest(ctx context.Context, in *pb.GetTestRequest) (*pb.Ge
 	return res, nil
 }
 
-func (s *testServer) CreateTest(ctx context.Context, in *pb.CreateTestRequest) (*pb.CreateTestResponse, error) {
+func (s *TestServer) CreateTest(ctx context.Context, in *pb.CreateTestRequest) (*pb.CreateTestResponse, error) {
 	test, err := s.r.CreateTest(ctx, in)
 	if err != nil {
 		return nil, err
@@ -50,13 +50,13 @@ func (s *testServer) CreateTest(ctx context.Context, in *pb.CreateTestRequest) (
 	}, nil
 }
 
-func (s *testServer) UpdateTest(ctx context.Context, in *pb.UpdateTestRequest) (*pb.UpdateTestResponse, error) {
+func (s *TestServer) UpdateTest(ctx context.Context, in *pb.UpdateTestRequest) (*pb.UpdateTestResponse, error) {
 	return &pb.UpdateTestResponse{
 		Name: in.Name,
 	}, nil
 }
 
-func (s *testServer) DeleteTest(ctx context.Context, in *pb.DeleteTestRequest) (*pb.DeleteTestResponse, error) {
+func (s *TestServer) DeleteTest(ctx context.Context, in *pb.DeleteTestRequest) (*pb.DeleteTestResponse, error) {
 	return &pb.DeleteTestResponse{
 		Id: in.Id,
 	}, nil
