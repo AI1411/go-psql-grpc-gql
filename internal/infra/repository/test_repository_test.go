@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"log"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -152,10 +151,8 @@ func testGetTest(t *testing.T) {
 				repo := NewTestRepository(client)
 				got, err := repo.GetTest(ctx, tt.in)
 
-				log.Printf("wantError: %v", tt.wantError)
-				log.Printf("err: %v", err)
 				if tt.wantError != nil {
-					assert.Error(t, tt.wantError, err)
+					assert.Equal(t, tt.wantError, err)
 				}
 
 				if tt.want != nil {
@@ -216,8 +213,137 @@ func testCreateTest(t *testing.T) {
 	}
 }
 
+var updateTestTestcases = []struct {
+	id        int
+	name      string
+	in        *grpc.UpdateTestRequest
+	want      *grpc.UpdateTestResponse
+	wantError error
+	setup     func(ctx context.Context, t *testing.T, client *db.Client)
+}{
+	{
+		id:   1,
+		name: "テスト更新正常系<TID:1>",
+		in: &grpc.UpdateTestRequest{
+			Id:   1,
+			Name: "updated",
+		},
+		want: &grpc.UpdateTestResponse{
+			Id:   1,
+			Name: "updated",
+		},
+		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tests ("id", "name") VALUES (DEFAULT, 'test');`).Error)
+		},
+	},
+	{
+		id:   2,
+		name: "テスト更新異常系 更新対象が見当たらない場合、NotFoundエラーが返ること<TID:2>",
+		in: &grpc.UpdateTestRequest{
+			Id:   3,
+			Name: "updated",
+		},
+		wantError: status.Error(codes.NotFound, "test not found"),
+		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tests ("id", "name") VALUES (DEFAULT, 'test');`).Error)
+		},
+	},
+}
+
+func testUpdateTest(t *testing.T) {
+	ctx, client := initializeForRepositoryTest(t)
+
+	for _, tt := range updateTestTestcases {
+		tt := tt
+		t.Run(
+			tt.name, func(t *testing.T) {
+				initDBForTests(context.Background(), t, client)
+				if tt.setup != nil {
+					tt.setup(ctx, t, client)
+				}
+
+				repo := NewTestRepository(client)
+				got, err := repo.UpdateTest(ctx, tt.in)
+
+				if tt.wantError != nil {
+					assert.Error(t, tt.wantError, err)
+				}
+
+				if tt.want != nil {
+					assert.Equal(t, tt.want, got)
+				}
+			},
+		)
+
+	}
+}
+
+var deleteTestTestcases = []struct {
+	id        int
+	name      string
+	in        *grpc.DeleteTestRequest
+	want      *grpc.DeleteTestResponse
+	wantError error
+	setup     func(ctx context.Context, t *testing.T, client *db.Client)
+}{
+	{
+		id:   1,
+		name: "テスト削除正常系<TID:1>",
+		in: &grpc.DeleteTestRequest{
+			Id: 1,
+		},
+		want: &grpc.DeleteTestResponse{
+			Id: 1,
+		},
+		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tests ("id", "name") VALUES (DEFAULT, 'test');`).Error)
+		},
+	},
+	{
+		id:   2,
+		name: "テスト削除異常系 削除対象が見当たらない場合、NotFoundエラーが返ること<TID:2>",
+		in: &grpc.DeleteTestRequest{
+			Id: 3,
+		},
+		wantError: status.Error(codes.NotFound, "test not found"),
+		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tests ("id", "name") VALUES (DEFAULT, 'test');`).Error)
+		},
+	},
+}
+
+func testDeleteTest(t *testing.T) {
+	ctx, client := initializeForRepositoryTest(t)
+
+	for _, tt := range deleteTestTestcases {
+		tt := tt
+		t.Run(
+			tt.name, func(t *testing.T) {
+				initDBForTests(context.Background(), t, client)
+				if tt.setup != nil {
+					tt.setup(ctx, t, client)
+				}
+
+				repo := NewTestRepository(client)
+				got, err := repo.DeleteTest(ctx, tt.in)
+
+				if tt.wantError != nil {
+					assert.Equal(t, tt.wantError, err)
+				}
+
+				if tt.want != nil {
+					assert.Equal(t, tt.want, got)
+				}
+			},
+		)
+
+	}
+}
+
 func TestAllTestcaseOfTest(t *testing.T) {
 	testListTest(t)
 	testGetTest(t)
 	testCreateTest(t)
+	testUpdateTest(t)
+	testDeleteTest(t)
 }
