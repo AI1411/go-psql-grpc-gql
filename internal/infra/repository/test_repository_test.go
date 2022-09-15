@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"log"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -201,7 +202,7 @@ func testCreateTest(t *testing.T) {
 				got, err := repo.CreateTest(ctx, tt.in)
 
 				if tt.wantError != nil {
-					assert.Error(t, tt.wantError, err)
+					assert.Equal(t, tt.wantError, err)
 				}
 
 				if tt.want != nil {
@@ -328,7 +329,7 @@ func testDeleteTest(t *testing.T) {
 				got, err := repo.DeleteTest(ctx, tt.in)
 
 				if tt.wantError != nil {
-					assert.Equal(t, tt.wantError, err)
+					assert.Error(t, tt.wantError, err)
 				}
 
 				if tt.want != nil {
