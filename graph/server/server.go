@@ -39,10 +39,13 @@ func main() {
 	zapLogger, _ := logger.NewLogger(true)
 	client, _ := db.NewClient(e, zapLogger)
 	tesRepo := repository.NewTestRepository(client)
+	userRepo := repository.NewUserRepository(client)
 	testServer := server.NewTestServer(tesRepo)
+	userServer := server.NewUserServer(userRepo)
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{
 		TestServer: testServer,
+		UserServer: userServer,
 	}}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))

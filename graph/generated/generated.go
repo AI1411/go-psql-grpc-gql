@@ -78,7 +78,7 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	CreateTest(ctx context.Context, input model.CreateTest) (*model.Test, error)
 	UpdateTest(ctx context.Context, input model.UpdateTest) (*model.Test, error)
-	DeleteTest(ctx context.Context, id int) (int, error)
+	DeleteTest(ctx context.Context, id int) (*model.Test, error)
 	CreateUser(ctx context.Context, input model.CreateUserInput) (*model.User, error)
 	UpdateUser(ctx context.Context, input model.UpdateUserInput) (*model.User, error)
 	DeleteUser(ctx context.Context, id int) (*model.User, error)
@@ -346,7 +346,7 @@ var sources = []*ast.Source{
 	{Name: "../mutation.graphqls", Input: `type Mutation {
     createTest(input: CreateTest!): Test!
     updateTest(input: UpdateTest!): Test!
-    deleteTest(id: Int!): Int!
+    deleteTest(id: Int!): Test!
 
     createUser(input: CreateUserInput!): User!
     updateUser(input: UpdateUserInput!): User!
@@ -721,9 +721,9 @@ func (ec *executionContext) _Mutation_deleteTest(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(*model.Test)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNTest2ᚖgithubᚗcomᚋAI1411ᚋgoᚑpsql_grpc_gqlᚋgraphᚋmodelᚐTest(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteTest(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -733,7 +733,13 @@ func (ec *executionContext) fieldContext_Mutation_deleteTest(ctx context.Context
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Test_id(ctx, field)
+			case "name":
+				return ec.fieldContext_Test_name(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Test", field.Name)
 		},
 	}
 	defer func() {

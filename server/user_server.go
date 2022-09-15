@@ -25,3 +25,19 @@ func (s *UserServer) ListUsers(ctx context.Context, in *grpc.ListUsersRequest) (
 	}
 	return res, nil
 }
+
+func (s *UserServer) GetUser(ctx context.Context, in *grpc.GetUserRequest) (*grpc.GetUserResponse, error) {
+	res, err := s.r.GetUser(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (s *UserServer) CreateUser(ctx context.Context, in *grpc.CreateUserRequest) (*grpc.CreateUserResponse, error) {
+	res, err := s.r.CreateUser(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}

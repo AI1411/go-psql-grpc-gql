@@ -1,7 +1,7 @@
 type Mutation {
     createTest(input: CreateTest!): Test!
     updateTest(input: UpdateTest!): Test!
-    deleteTest(id: Int!): Int!
+    deleteTest(id: Int!): Test!
 
     createUser(input: CreateUserInput!): User!
     updateUser(input: UpdateUserInput!): User!

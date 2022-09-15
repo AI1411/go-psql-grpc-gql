@@ -31,17 +31,60 @@ func (r *mutationResolver) CreateTest(ctx context.Context, input model.CreateTes
 
 // UpdateTest is the resolver for the updateTest field.
 func (r *mutationResolver) UpdateTest(ctx context.Context, input model.UpdateTest) (*model.Test, error) {
-	panic(fmt.Errorf("not implemented: UpdateTest - updateTest"))
+	test, err := r.TestServer.UpdateTest(ctx, &grpc.UpdateTestRequest{
+		Id:   uint32(input.ID),
+		Name: input.Name,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	response := &model.Test{
+		ID:   int(test.Id),
+		Name: test.Name,
+	}
+
+	return response, nil
 }
 
 // DeleteTest is the resolver for the deleteTest field.
-func (r *mutationResolver) DeleteTest(ctx context.Context, id int) (int, error) {
-	panic(fmt.Errorf("not implemented: DeleteTest - deleteTest"))
+func (r *mutationResolver) DeleteTest(ctx context.Context, id int) (*model.Test, error) {
+	test, err := r.TestServer.DeleteTest(ctx, &grpc.DeleteTestRequest{
+		Id: uint32(id),
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	response := &model.Test{
+		ID: int(test.Id),
+	}
+
+	return response, nil
 }
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUserInput) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
+	user, err := r.UserServer.CreateUser(ctx, &grpc.CreateUserRequest{
+		Name:     input.Name,
+		Email:    input.Email,
+		Password: input.Password,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	response := &model.User{
+		ID:        int(user.User.Id),
+		Name:      user.User.Name,
+		Email:     user.User.Email,
+		Password:  user.User.Password,
+		CreatedAt: user.User.CreatedAt,
+		UpdatedAt: user.User.UpdatedAt,
+	}
+
+	return response, nil
 }
 
 // UpdateUser is the resolver for the updateUser field.

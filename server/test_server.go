@@ -52,13 +52,24 @@ func (s *TestServer) CreateTest(ctx context.Context, in *grpc.CreateTestRequest)
 }
 
 func (s *TestServer) UpdateTest(ctx context.Context, in *grpc.UpdateTestRequest) (*grpc.UpdateTestResponse, error) {
+	test, err := s.r.UpdateTest(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+
 	return &grpc.UpdateTestResponse{
-		Name: in.Name,
+		Id:   test.Id,
+		Name: test.Name,
 	}, nil
 }
 
 func (s *TestServer) DeleteTest(ctx context.Context, in *grpc.DeleteTestRequest) (*grpc.DeleteTestResponse, error) {
+	test, err := s.r.DeleteTest(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+
 	return &grpc.DeleteTestResponse{
-		Id: in.Id,
+		Id: test.Id,
 	}, nil
 }

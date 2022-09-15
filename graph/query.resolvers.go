@@ -5,7 +5,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/AI1411/go-psql_grpc_gql/graph/generated"
 	"github.com/AI1411/go-psql_grpc_gql/graph/model"
@@ -48,12 +47,40 @@ func (r *queryResolver) Tests(ctx context.Context) ([]*model.Test, error) {
 
 // Users is the resolver for the users field.
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-	panic(fmt.Errorf("not implemented: Users - users"))
+	users, err := r.UserServer.ListUsers(ctx, &grpc.ListUsersRequest{})
+	if err != nil {
+		return nil, err
+	}
+
+	response := make([]*model.User, len(users.Users))
+	for i, user := range users.Users {
+		response[i] = &model.User{
+			ID:        int(user.Id),
+			Name:      user.Name,
+			Email:     user.Email,
+			CreatedAt: user.CreatedAt,
+		}
+	}
+	return response, nil
 }
 
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, id int) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: User - user"))
+	user, err := r.UserServer.GetUser(ctx, &grpc.GetUserRequest{
+		Id: uint32(id),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	response := &model.User{
+		ID:        int(user.User.Id),
+		Name:      user.User.Name,
+		Email:     user.User.Email,
+		CreatedAt: user.User.CreatedAt,
+	}
+
+	return response, nil
 }
 
 // Query returns generated.QueryResolver implementation.

@@ -75,3 +75,37 @@ func (r *TestRepository) CreateTest(ctx context.Context, request *grpc.CreateTes
 		Name: test.Name,
 	}, nil
 }
+
+func (r *TestRepository) UpdateTest(ctx context.Context, in *grpc.UpdateTestRequest) (*grpc.UpdateTestResponse, error) {
+	var test Test
+	if err := r.dbClient.Conn(ctx).Where("id = ?", in.Id).First(&test).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, status.Error(codes.NotFound, "test not found")
+		}
+		return nil, status.Error(codes.Internal, "failed to get test")
+	}
+	test.Name = in.Name
+	if err := r.dbClient.Conn(ctx).Save(&test).Error; err != nil {
+		return nil, status.Error(codes.Internal, "failed to update test")
+	}
+	return &grpc.UpdateTestResponse{
+		Id:   test.ID,
+		Name: test.Name,
+	}, nil
+}
+
+func (r *TestRepository) DeleteTest(ctx context.Context, in *grpc.DeleteTestRequest) (*grpc.DeleteTestResponse, error) {
+	var test Test
+	if err := r.dbClient.Conn(ctx).Where("id = ?", in.Id).First(&test).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, status.Error(codes.NotFound, "test not found")
+		}
+		return nil, status.Error(codes.Internal, "failed to get test")
+	}
+	if err := r.dbClient.Conn(ctx).Delete(&test).Error; err != nil {
+		return nil, status.Error(codes.Internal, "failed to delete test")
+	}
+	return &grpc.DeleteTestResponse{
+		Id: test.ID,
+	}, nil
+}
