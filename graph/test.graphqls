@@ -11,14 +11,3 @@ input UpdateTest {
     id: Int!
     name: String!
 }
-
-type Mutation {
-    createTest(input: CreateTest!): Test!
-    updateTest(input: UpdateTest!): Test!
-    deleteTest(id: Int!): Int!
-}
-
-type Query {
-    test(input: Int!): Test!
-    tests: [Test!]!
-}

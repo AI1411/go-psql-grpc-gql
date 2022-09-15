@@ -9,7 +9,7 @@ import (
 
 	"github.com/AI1411/go-psql_grpc_gql/db"
 	"github.com/AI1411/go-psql_grpc_gql/env"
-	pb "github.com/AI1411/go-psql_grpc_gql/grpc/test"
+	pb "github.com/AI1411/go-psql_grpc_gql/grpc"
 	"github.com/AI1411/go-psql_grpc_gql/internal/infra/repository"
 )
 
@@ -22,7 +22,9 @@ func Handler(e *env.Env, zapLogger *zap.Logger) {
 	s := grpc.NewServer()
 	dbClient, err := db.NewClient(e, zapLogger)
 	testRepo := repository.NewTestRepository(dbClient)
+	userRepo := repository.NewUserRepository(dbClient)
 	pb.RegisterTestServiceServer(s, NewTestServer(testRepo))
+	pb.RegisterUserServiceServer(s, NewUserServer(userRepo))
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)

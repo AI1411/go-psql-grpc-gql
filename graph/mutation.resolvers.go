@@ -9,7 +9,7 @@ import (
 
 	"github.com/AI1411/go-psql_grpc_gql/graph/generated"
 	"github.com/AI1411/go-psql_grpc_gql/graph/model"
-	"github.com/AI1411/go-psql_grpc_gql/grpc/test"
+	"github.com/AI1411/go-psql_grpc_gql/grpc"
 )
 
 // CreateTest is the resolver for the createTest field.
@@ -39,45 +39,22 @@ func (r *mutationResolver) DeleteTest(ctx context.Context, id int) (int, error) 
 	panic(fmt.Errorf("not implemented: DeleteTest - deleteTest"))
 }
 
-// Test is the resolver for the test field.
-func (r *queryResolver) Test(ctx context.Context, input int) (*model.Test, error) {
-	test, err := r.TestServer.GetTest(ctx, &grpc.GetTestRequest{
-		Id: uint32(input),
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	response := &model.Test{
-		ID:   int(test.Id),
-		Name: test.Name,
-	}
-
-	return response, nil
+// CreateUser is the resolver for the createUser field.
+func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUserInput) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
 }
 
-// Tests is the resolver for the tests field.
-func (r *queryResolver) Tests(ctx context.Context) ([]*model.Test, error) {
-	tests, err := r.TestServer.ListTest(ctx, &grpc.ListTestRequest{})
-	if err != nil {
-		return nil, err
-	}
+// UpdateUser is the resolver for the updateUser field.
+func (r *mutationResolver) UpdateUser(ctx context.Context, input model.UpdateUserInput) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: UpdateUser - updateUser"))
+}
 
-	response := make([]*model.Test, len(tests.Tests))
-	for i, test := range tests.Tests {
-		response[i] = &model.Test{
-			ID:   int(test.Id),
-			Name: test.Name,
-		}
-	}
-	return response, nil
+// DeleteUser is the resolver for the deleteUser field.
+func (r *mutationResolver) DeleteUser(ctx context.Context, id int) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: DeleteUser - deleteUser"))
 }
 
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
-// Query returns generated.QueryResolver implementation.
-func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
-
 type mutationResolver struct{ *Resolver }
-type queryResolver struct{ *Resolver }

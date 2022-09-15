@@ -1,0 +1,7 @@
+type Query {
+    test(input: Int!): Test!
+    tests: [Test!]!
+
+    users: [User!]!
+    user(id: Int!): User!
+}

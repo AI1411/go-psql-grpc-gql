@@ -1,6 +1,6 @@
 syntax = 'proto3';
 
-option go_package = "/grpc/user";
+option go_package = "/grpc";
 
 package user.v1;
 

@@ -175,54 +175,58 @@
         
           
           <li>
-            <a href="#grpc%2ftest%2ftest.proto">grpc/test/test.proto</a>
+            <a href="#grpc%2fuser.proto">grpc/user.proto</a>
             <ul>
               
                 <li>
-                  <a href="#test.v1.CreateTestRequest"><span class="badge">M</span>CreateTestRequest</a>
+                  <a href="#user.v1.CreateUserRequest"><span class="badge">M</span>CreateUserRequest</a>
                 </li>
               
                 <li>
-                  <a href="#test.v1.CreateTestResponse"><span class="badge">M</span>CreateTestResponse</a>
+                  <a href="#user.v1.CreateUserResponse"><span class="badge">M</span>CreateUserResponse</a>
                 </li>
               
                 <li>
-                  <a href="#test.v1.DeleteTestRequest"><span class="badge">M</span>DeleteTestRequest</a>
+                  <a href="#user.v1.DeleteUserRequest"><span class="badge">M</span>DeleteUserRequest</a>
                 </li>
               
                 <li>
-                  <a href="#test.v1.DeleteTestResponse"><span class="badge">M</span>DeleteTestResponse</a>
+                  <a href="#user.v1.DeleteUserResponse"><span class="badge">M</span>DeleteUserResponse</a>
                 </li>
               
                 <li>
-                  <a href="#test.v1.GetTestRequest"><span class="badge">M</span>GetTestRequest</a>
+                  <a href="#user.v1.GetUserRequest"><span class="badge">M</span>GetUserRequest</a>
                 </li>
               
                 <li>
-                  <a href="#test.v1.GetTestResponse"><span class="badge">M</span>GetTestResponse</a>
+                  <a href="#user.v1.GetUserResponse"><span class="badge">M</span>GetUserResponse</a>
                 </li>
               
                 <li>
-                  <a href="#test.v1.ListTestRequest"><span class="badge">M</span>ListTestRequest</a>
+                  <a href="#user.v1.ListUsersRequest"><span class="badge">M</span>ListUsersRequest</a>
                 </li>
               
                 <li>
-                  <a href="#test.v1.ListTestResponse"><span class="badge">M</span>ListTestResponse</a>
+                  <a href="#user.v1.ListUsersResponse"><span class="badge">M</span>ListUsersResponse</a>
                 </li>
               
                 <li>
-                  <a href="#test.v1.UpdateTestRequest"><span class="badge">M</span>UpdateTestRequest</a>
+                  <a href="#user.v1.UpdateUserRequest"><span class="badge">M</span>UpdateUserRequest</a>
                 </li>
               
                 <li>
-                  <a href="#test.v1.UpdateTestResponse"><span class="badge">M</span>UpdateTestResponse</a>
+                  <a href="#user.v1.UpdateUserResponse"><span class="badge">M</span>UpdateUserResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#user.v1.User"><span class="badge">M</span>User</a>
                 </li>
               
               
               
               
                 <li>
-                  <a href="#test.v1.TestService"><span class="badge">S</span>TestService</a>
+                  <a href="#user.v1.UserService"><span class="badge">S</span>UserService</a>
                 </li>
               
             </ul>
@@ -235,12 +239,12 @@
     
       
       <div class="file-heading">
-        <h2 id="grpc/test/test.proto">grpc/test/test.proto</h2><a href="#title">Top</a>
+        <h2 id="grpc/user.proto">grpc/user.proto</h2><a href="#title">Top</a>
       </div>
       <p></p>
 
       
-        <h3 id="test.v1.CreateTestRequest">CreateTestRequest</h3>
+        <h3 id="user.v1.CreateUserRequest">CreateUserRequest</h3>
         <p></p>
 
         
@@ -257,32 +261,15 @@
                   <td><p> </p></td>
                 </tr>
               
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="test.v1.CreateTestResponse">CreateTestResponse</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
                 <tr>
-                  <td>id</td>
-                  <td><a href="#uint32">uint32</a></td>
+                  <td>email</td>
+                  <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
               
                 <tr>
-                  <td>name</td>
+                  <td>password</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p> </p></td>
@@ -295,7 +282,31 @@
 
         
       
-        <h3 id="test.v1.DeleteTestRequest">DeleteTestRequest</h3>
+        <h3 id="user.v1.CreateUserResponse">CreateUserResponse</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>user</td>
+                  <td><a href="#user.v1.User">User</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="user.v1.DeleteUserRequest">DeleteUserRequest</h3>
         <p></p>
 
         
@@ -319,7 +330,31 @@
 
         
       
-        <h3 id="test.v1.DeleteTestResponse">DeleteTestResponse</h3>
+        <h3 id="user.v1.DeleteUserResponse">DeleteUserResponse</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>user</td>
+                  <td><a href="#user.v1.User">User</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="user.v1.GetUserRequest">GetUserRequest</h3>
         <p></p>
 
         
@@ -343,7 +378,7 @@
 
         
       
-        <h3 id="test.v1.GetTestRequest">GetTestRequest</h3>
+        <h3 id="user.v1.GetUserResponse">GetUserResponse</h3>
         <p></p>
 
         
@@ -354,8 +389,8 @@
             <tbody>
               
                 <tr>
-                  <td>id</td>
-                  <td><a href="#uint32">uint32</a></td>
+                  <td>user</td>
+                  <td><a href="#user.v1.User">User</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
@@ -367,7 +402,7 @@
 
         
       
-        <h3 id="test.v1.GetTestResponse">GetTestResponse</h3>
+        <h3 id="user.v1.ListUsersRequest">ListUsersRequest</h3>
         <p></p>
 
         
@@ -376,16 +411,23 @@
               <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
             </thead>
             <tbody>
-              
-                <tr>
-                  <td>id</td>
-                  <td><a href="#uint32">uint32</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
               
                 <tr>
                   <td>name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>email</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>created_at</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p> </p></td>
@@ -398,7 +440,7 @@
 
         
       
-        <h3 id="test.v1.ListTestRequest">ListTestRequest</h3>
+        <h3 id="user.v1.ListUsersResponse">ListUsersResponse</h3>
         <p></p>
 
         
@@ -409,39 +451,8 @@
             <tbody>
               
                 <tr>
-                  <td>id</td>
-                  <td><a href="#uint32">uint32</a></td>
-                  <td>optional</td>
-                  <td><p> </p></td>
-                </tr>
-              
-                <tr>
-                  <td>name</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="test.v1.ListTestResponse">ListTestResponse</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>tests</td>
-                  <td><a href="#test.v1.GetTestResponse">GetTestResponse</a></td>
+                  <td>users</td>
+                  <td><a href="#user.v1.User">User</a></td>
                   <td>repeated</td>
                   <td><p> </p></td>
                 </tr>
@@ -453,7 +464,7 @@
 
         
       
-        <h3 id="test.v1.UpdateTestRequest">UpdateTestRequest</h3>
+        <h3 id="user.v1.UpdateUserRequest">UpdateUserRequest</h3>
         <p></p>
 
         
@@ -477,6 +488,20 @@
                   <td><p> </p></td>
                 </tr>
               
+                <tr>
+                  <td>email</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>password</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -484,7 +509,31 @@
 
         
       
-        <h3 id="test.v1.UpdateTestResponse">UpdateTestResponse</h3>
+        <h3 id="user.v1.UpdateUserResponse">UpdateUserResponse</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>user</td>
+                  <td><a href="#user.v1.User">User</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="user.v1.User">User</h3>
         <p></p>
 
         
@@ -508,6 +557,34 @@
                   <td><p> </p></td>
                 </tr>
               
+                <tr>
+                  <td>email</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>password</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>created_at</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>updated_at</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -521,7 +598,7 @@
       
 
       
-        <h3 id="test.v1.TestService">TestService</h3>
+        <h3 id="user.v1.UserService">UserService</h3>
         <p></p>
         <table class="enum-table">
           <thead>
@@ -530,37 +607,37 @@
           <tbody>
             
               <tr>
-                <td>CreateTest</td>
-                <td><a href="#test.v1.CreateTestRequest">CreateTestRequest</a></td>
-                <td><a href="#test.v1.CreateTestResponse">CreateTestResponse</a></td>
+                <td>GetUser</td>
+                <td><a href="#user.v1.GetUserRequest">GetUserRequest</a></td>
+                <td><a href="#user.v1.GetUserResponse">GetUserResponse</a></td>
                 <td><p></p></td>
               </tr>
             
               <tr>
-                <td>GetTest</td>
-                <td><a href="#test.v1.GetTestRequest">GetTestRequest</a></td>
-                <td><a href="#test.v1.GetTestResponse">GetTestResponse</a></td>
+                <td>CreateUser</td>
+                <td><a href="#user.v1.CreateUserRequest">CreateUserRequest</a></td>
+                <td><a href="#user.v1.CreateUserResponse">CreateUserResponse</a></td>
                 <td><p></p></td>
               </tr>
             
               <tr>
-                <td>UpdateTest</td>
-                <td><a href="#test.v1.UpdateTestRequest">UpdateTestRequest</a></td>
-                <td><a href="#test.v1.UpdateTestResponse">UpdateTestResponse</a></td>
+                <td>UpdateUser</td>
+                <td><a href="#user.v1.UpdateUserRequest">UpdateUserRequest</a></td>
+                <td><a href="#user.v1.UpdateUserResponse">UpdateUserResponse</a></td>
                 <td><p></p></td>
               </tr>
             
               <tr>
-                <td>DeleteTest</td>
-                <td><a href="#test.v1.DeleteTestRequest">DeleteTestRequest</a></td>
-                <td><a href="#test.v1.DeleteTestResponse">DeleteTestResponse</a></td>
+                <td>DeleteUser</td>
+                <td><a href="#user.v1.DeleteUserRequest">DeleteUserRequest</a></td>
+                <td><a href="#user.v1.DeleteUserResponse">DeleteUserResponse</a></td>
                 <td><p></p></td>
               </tr>
             
               <tr>
-                <td>ListTest</td>
-                <td><a href="#test.v1.ListTestRequest">ListTestRequest</a></td>
-                <td><a href="#test.v1.ListTestResponse">ListTestResponse</a></td>
+                <td>ListUsers</td>
+                <td><a href="#user.v1.ListUsersRequest">ListUsersRequest</a></td>
+                <td><a href="#user.v1.ListUsersResponse">ListUsersResponse</a></td>
                 <td><p></p></td>
               </tr>
             

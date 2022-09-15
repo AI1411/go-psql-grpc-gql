@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/AI1411/go-psql_grpc_gql/db"
-	"github.com/AI1411/go-psql_grpc_gql/grpc/test"
+	"github.com/AI1411/go-psql_grpc_gql/grpc"
 	"github.com/AI1411/go-psql_grpc_gql/internal/helper"
 )
 

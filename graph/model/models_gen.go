@@ -6,6 +6,12 @@ type CreateTest struct {
 	Name string `json:"name"`
 }
 
+type CreateUserInput struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 type Test struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
@@ -14,4 +20,20 @@ type Test struct {
 type UpdateTest struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
+}
+
+type UpdateUserInput struct {
+	ID       int     `json:"id"`
+	Name     *string `json:"name"`
+	Email    *string `json:"email"`
+	Password *string `json:"password"`
+}
+
+type User struct {
+	ID        int    `json:"id"`
+	Name      string `json:"name"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
 }
