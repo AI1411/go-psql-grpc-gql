@@ -2,9 +2,13 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	"gorm.io/gorm"
 
 	"github.com/AI1411/go-psql_grpc_gql/db"
 	"github.com/AI1411/go-psql_grpc_gql/grpc"
@@ -59,14 +63,18 @@ func (r *UserRepository) ListUsers(ctx context.Context, in *grpc.ListUsersReques
 func (r *UserRepository) GetUser(ctx context.Context, in *grpc.GetUserRequest,
 ) (*grpc.GetUserResponse, error) {
 	var user User
-	r.dbClient.Conn(ctx).First(&user, in.Id)
+	if err := r.dbClient.Conn(ctx).First(&user, in.Id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, status.Error(codes.NotFound, "user not found")
+		}
+		return nil, status.Error(codes.Internal, "failed to get user")
+	}
 
 	grpcResponse := &grpc.GetUserResponse{
 		User: &grpc.User{
 			Id:        user.ID,
 			Name:      user.Name,
 			Email:     user.Email,
-			Password:  user.Password,
 			CreatedAt: user.CreatedAt.String(),
 			UpdatedAt: user.UpdatedAt.String(),
 		},

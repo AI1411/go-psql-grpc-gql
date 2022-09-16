@@ -6,6 +6,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/AI1411/go-psql_grpc_gql/db"
 	"github.com/AI1411/go-psql_grpc_gql/grpc"
@@ -195,7 +197,7 @@ var listUserTestcases = []struct {
 	},
 }
 
-func testListUser(t *testing.T) {
+func TestListUser(t *testing.T) {
 	ctx, client := initializeForRepositoryTest(t)
 
 	for _, tt := range listUserTestcases {
@@ -218,6 +220,77 @@ func testListUser(t *testing.T) {
 	}
 }
 
+var getUserTestcases = []struct {
+	id        int
+	name      string
+	in        *grpc.GetUserRequest
+	want      *grpc.GetUserResponse
+	wantError error
+	setup     func(ctx context.Context, t *testing.T, client *db.Client)
+}{
+	{
+		id:   1,
+		name: "ユーザ詳細正常系<TID:1>",
+		in: &grpc.GetUserRequest{
+			Id: 1,
+		},
+		want: &grpc.GetUserResponse{
+			User: &grpc.User{
+				Id:        1,
+				Name:      "test",
+				Email:     "test@gmail.com",
+				CreatedAt: "2022-09-16 08:47:22.182 +0000 UTC",
+				UpdatedAt: "2022-09-16 08:47:22.182 +0000 UTC",
+			},
+		},
+		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.users ("name","email","password","created_at","updated_at") VALUES ('test','test@gmail.com','$2a$10$n4h5tHioqRmJjm/2MQyHYOCehdG1OjfV9VzH8YXWZ/LHH93rQjWiK','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182')`).Error)
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.users ("name","email","password","created_at","updated_at") VALUES ('akira','akira@gmail.com','$2a$10$tyNZh8SbBwP1rvGzHWzSPeNATz/N24wTXKDc1FS53waJzFlEeTWl6','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182')`).Error)
+		},
+	},
+	{
+		id:   2,
+		name: "ユーザ詳細異常系 レコードが見つからない場合、NotFoundエラーになること<TID:2>",
+		in: &grpc.GetUserRequest{
+			Id: 3,
+		},
+		wantError: status.Error(codes.NotFound, "user not found"),
+		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.users ("name","email","password","created_at","updated_at") VALUES ('test','test@gmail.com','$2a$10$n4h5tHioqRmJjm/2MQyHYOCehdG1OjfV9VzH8YXWZ/LHH93rQjWiK','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182')`).Error)
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.users ("name","email","password","created_at","updated_at") VALUES ('akira','akira@gmail.com','$2a$10$tyNZh8SbBwP1rvGzHWzSPeNATz/N24wTXKDc1FS53waJzFlEeTWl6','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182')`).Error)
+		},
+	},
+}
+
+func TestGetUser(t *testing.T) {
+	ctx, client := initializeForRepositoryTest(t)
+
+	for _, tt := range getUserTestcases {
+		tt := tt
+		t.Run(
+			tt.name, func(t *testing.T) {
+				initDBForTests(context.Background(), t, client)
+				if tt.setup != nil {
+					tt.setup(ctx, t, client)
+				}
+
+				repo := NewUserRepository(client)
+				got, err := repo.GetUser(ctx, tt.in)
+
+				if tt.wantError != nil {
+					require.Equal(t, tt.wantError, err)
+				}
+
+				if tt.want != nil {
+					assert.Equal(t, tt.want, got)
+				}
+			},
+		)
+
+	}
+}
+
 func TestAllUserTest(t *testing.T) {
-	testListUser(t)
+	TestListUser(t)
+	TestGetUser(t)
 }
