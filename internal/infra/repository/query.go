@@ -21,3 +21,17 @@ func addWhereLike(query *gorm.DB, columnName string, value string) *gorm.DB {
 	}
 	return query.Where(fmt.Sprintf("%s LIKE ?", columnName), "%"+value+"%")
 }
+
+func addWhereGte(query *gorm.DB, columnName string, value interface{}) *gorm.DB {
+	if helper.IsNilOrEmpty(value) {
+		return query
+	}
+	return query.Where(fmt.Sprintf("%s >= ?", columnName), value)
+}
+
+func addWhereLte(query *gorm.DB, columnName string, value interface{}) *gorm.DB {
+	if helper.IsNilOrEmpty(value) {
+		return query
+	}
+	return query.Where(fmt.Sprintf("%s <= ?", columnName), value)
+}

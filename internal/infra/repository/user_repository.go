@@ -11,12 +11,12 @@ import (
 )
 
 type User struct {
-	ID        uint32    `gorm:"primaryKey"`
-	Name      string    `gorm:"type:varchar(255);not null"`
-	Email     string    `gorm:"type:varchar(255);not null"`
-	Password  string    `gorm:"type:varchar(255);not null"`
-	CreatedAt time.Time `gorm:"type:timestamp;not null"`
-	UpdatedAt time.Time `gorm:"type:timestamp;not null"`
+	ID        uint32
+	Name      string
+	Email     string
+	Password  string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type UserRepository struct {
@@ -32,7 +32,12 @@ func NewUserRepository(dbClient *db.Client) *UserRepository {
 func (r *UserRepository) ListUsers(ctx context.Context, in *grpc.ListUsersRequest,
 ) (*grpc.ListUsersResponse, error) {
 	var users []User
-	r.dbClient.Conn(ctx).Find(&users)
+	baseQuery := r.dbClient.Conn(ctx)
+	baseQuery = addWhereLike(baseQuery, "name", in.Name)
+	baseQuery = addWhereEq(baseQuery, "email", in.Email)
+	baseQuery = addWhereGte(baseQuery, "created_at", in.CreatedAtFrom)
+	baseQuery = addWhereLte(baseQuery, "created_at", in.CreatedAtTo)
+	baseQuery.Find(&users)
 
 	res := make([]*grpc.User, len(users))
 	for i, user := range users {
@@ -40,7 +45,6 @@ func (r *UserRepository) ListUsers(ctx context.Context, in *grpc.ListUsersReques
 			Id:        user.ID,
 			Name:      user.Name,
 			Email:     user.Email,
-			Password:  user.Password,
 			CreatedAt: user.CreatedAt.String(),
 			UpdatedAt: user.UpdatedAt.String(),
 		}

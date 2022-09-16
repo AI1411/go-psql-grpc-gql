@@ -61,7 +61,8 @@ message DeleteUserResponse {
 message ListUsersRequest {
   string name = 1;
   string email = 2;
-  string created_at = 3;
+  string created_at_from = 3;
+  string created_at_to = 4;
 }
 
 message ListUsersResponse {

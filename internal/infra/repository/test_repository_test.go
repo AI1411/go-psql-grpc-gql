@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"log"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -37,8 +36,8 @@ var listTestTestcases = []struct {
 			},
 		},
 		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
-			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tests ("id", "name") VALUES (DEFAULT, 'test1');`).Error)
-			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tests ("id", "name") VALUES (DEFAULT, 'test2');`).Error)
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO "public".tests ("id", "name") VALUES (DEFAULT, 'test1');`).Error)
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO "public".tests ("id", "name") VALUES (DEFAULT, 'test2');`).Error)
 		},
 	},
 	{
@@ -54,8 +53,8 @@ var listTestTestcases = []struct {
 			},
 		},
 		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
-			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tests ("id", "name") VALUES (DEFAULT, 'test1');`).Error)
-			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tests ("id", "name") VALUES (DEFAULT, 'test2');`).Error)
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO "public".tests ("id", "name") VALUES (DEFAULT, 'test1');`).Error)
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO "public".tests ("id", "name") VALUES (DEFAULT, 'test2');`).Error)
 		},
 	},
 	{
@@ -71,8 +70,8 @@ var listTestTestcases = []struct {
 			},
 		},
 		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
-			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tests ("id", "name") VALUES (DEFAULT, 'test1');`).Error)
-			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tests ("id", "name") VALUES (DEFAULT, 'test2');`).Error)
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO "public".tests ("id", "name") VALUES (DEFAULT, 'test1');`).Error)
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO "public".tests ("id", "name") VALUES (DEFAULT, 'test2');`).Error)
 		},
 	},
 }
@@ -119,8 +118,8 @@ var getTestTestcases = []struct {
 			Name: "test1",
 		},
 		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
-			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tests ("id", "name") VALUES (DEFAULT, 'test1');`).Error)
-			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tests ("id", "name") VALUES (DEFAULT, 'test2');`).Error)
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO "public".tests ("id", "name") VALUES (DEFAULT, 'test1');`).Error)
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO "public".tests ("id", "name") VALUES (DEFAULT, 'test2');`).Error)
 		},
 	},
 	{
@@ -131,8 +130,8 @@ var getTestTestcases = []struct {
 		},
 		wantError: status.Error(codes.NotFound, "test not found"),
 		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
-			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tests ("id", "name") VALUES (DEFAULT, 'test1');`).Error)
-			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tests ("id", "name") VALUES (DEFAULT, 'test2');`).Error)
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO "public".tests ("id", "name") VALUES (DEFAULT, 'test1');`).Error)
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO "public".tests ("id", "name") VALUES (DEFAULT, 'test2');`).Error)
 		},
 	},
 }
@@ -234,7 +233,7 @@ var updateTestTestcases = []struct {
 			Name: "updated",
 		},
 		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
-			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tests ("id", "name") VALUES (DEFAULT, 'test');`).Error)
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO "public".tests ("id", "name") VALUES (DEFAULT, 'test');`).Error)
 		},
 	},
 	{
@@ -246,7 +245,7 @@ var updateTestTestcases = []struct {
 		},
 		wantError: status.Error(codes.NotFound, "test not found"),
 		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
-			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tests ("id", "name") VALUES (DEFAULT, 'test');`).Error)
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO "public".tests ("id", "name") VALUES (DEFAULT, 'test');`).Error)
 		},
 	},
 }
