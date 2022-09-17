@@ -135,3 +135,28 @@ func (r *UserRepository) UpdateUser(ctx context.Context, in *grpc.UpdateUserRequ
 	}
 	return grpcResponse, nil
 }
+
+func (r *UserRepository) DeleteUser(ctx context.Context, in *grpc.DeleteUserRequest,
+) (*grpc.DeleteUserResponse, error) {
+	var user User
+	if err := r.dbClient.Conn(ctx).First(&user, in.Id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, status.Error(codes.NotFound, "user not found")
+		}
+		return nil, status.Error(codes.Internal, "failed to get user")
+	}
+
+	if err := r.dbClient.Conn(ctx).Delete(&user).Error; err != nil {
+		return nil, status.Error(codes.Internal, "failed to delete user")
+	}
+
+	grpcResponse := &grpc.DeleteUserResponse{
+		User: &grpc.User{
+			Id:    user.ID,
+			Name:  user.Name,
+			Email: user.Email,
+		},
+	}
+
+	return grpcResponse, nil
+}

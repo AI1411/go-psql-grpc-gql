@@ -441,9 +441,83 @@ func TestUpdateUser(t *testing.T) {
 	}
 }
 
+var deleteUserTestcases = []struct {
+	id        int
+	name      string
+	in        *grpc.DeleteUserRequest
+	want      *grpc.DeleteUserResponse
+	wantError error
+	setup     func(ctx context.Context, t *testing.T, client *db.Client)
+}{
+	{
+		id:   1,
+		name: "ユーザ削除正常系<TID:1>",
+		in: &grpc.DeleteUserRequest{
+			Id: 1,
+		},
+		want: &grpc.DeleteUserResponse{
+			User: &grpc.User{
+				Id:    1,
+				Name:  "test",
+				Email: "test@gmail.com",
+			},
+		},
+
+		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.users ("name","email","password","created_at","updated_at") VALUES ('test','test@gmail.com','$2a$10$n4h5tHioqRmJjm/2MQyHYOCehdG1OjfV9VzH8YXWZ/LHH93rQjWiK','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182')`).Error)
+		},
+	},
+	{
+		id:   2,
+		name: "ユーザ削除異常系 レコードが見つからない場合、NotFoundエラーになること<TID:2>",
+		in: &grpc.DeleteUserRequest{
+			Id: 4,
+		},
+		wantError: status.Error(codes.NotFound, "user not found"),
+
+		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.users ("name","email","password","created_at","updated_at") VALUES ('test','test@gmail.com','$2a$10$n4h5tHioqRmJjm/2MQyHYOCehdG1OjfV9VzH8YXWZ/LHH93rQjWiK','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182')`).Error)
+		},
+	},
+}
+
+func TestDeleteUser(t *testing.T) {
+	ctx, client := initializeForRepositoryTest(t)
+
+	for _, tt := range deleteUserTestcases {
+		tt := tt
+
+		//tgtIds := []int{1}
+		//if !helper.Contains(tgtIds, tt.id) {
+		//	continue
+		//}
+
+		t.Run(
+			tt.name, func(t *testing.T) {
+				initDBForTests(context.Background(), t, client)
+				if tt.setup != nil {
+					tt.setup(ctx, t, client)
+				}
+
+				repo := NewUserRepository(client)
+				got, err := repo.DeleteUser(ctx, tt.in)
+
+				if tt.wantError != nil {
+					require.Equal(t, tt.wantError, err)
+				}
+
+				if tt.want != nil {
+					assert.Equal(t, tt.want, got)
+				}
+			},
+		)
+	}
+}
+
 func TestAllUserTest(t *testing.T) {
 	TestListUser(t)
 	TestGetUser(t)
 	TestCreateUser(t)
 	TestUpdateUser(t)
+	TestDeleteUser(t)
 }
