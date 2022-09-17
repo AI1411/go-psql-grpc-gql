@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -514,10 +515,96 @@ func TestDeleteUser(t *testing.T) {
 	}
 }
 
+var changePasswordTestcases = []struct {
+	id           int
+	name         string
+	in           *grpc.ChangePasswordRequest
+	wantPassword string
+	wantError    error
+	setup        func(ctx context.Context, t *testing.T, client *db.Client)
+}{
+	{
+		id:   1,
+		name: "ユーザパスワード変更正常系<TID:1>",
+		in: &grpc.ChangePasswordRequest{
+			Id:          1,
+			OldPassword: "test",
+			NewPassword: "password",
+		},
+		wantPassword: "password",
+		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.users ("name","email","password","created_at","updated_at") VALUES ('test','test@gmail.com','$2a$10$QON8RQ5kMr.JGRtPpB5RB.QbpjOxjZoIfUP3SBntExHXcGPnTUy5y','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182')`).Error)
+		},
+	},
+	{
+		id:   2,
+		name: "ユーザパスワード変更異常系 古いパスワードが現在のものと誤っている場合、エラーになること<TID:1>",
+		in: &grpc.ChangePasswordRequest{
+			Id:          1,
+			OldPassword: "invalid",
+			NewPassword: "password",
+		},
+		wantPassword: "password",
+		wantError:    status.Error(codes.InvalidArgument, "invalid old password"),
+		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.users ("name","email","password","created_at","updated_at") VALUES ('test','test@gmail.com','$2a$10$QON8RQ5kMr.JGRtPpB5RB.QbpjOxjZoIfUP3SBntExHXcGPnTUy5y','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182')`).Error)
+		},
+	},
+	{
+		id:   3,
+		name: "ユーザパスワード変更異常系 新しいパスワードが入力されていない場合、エラーになること<TID:1>",
+		in: &grpc.ChangePasswordRequest{
+			Id:          1,
+			OldPassword: "test",
+			NewPassword: "",
+		},
+		wantPassword: "password",
+		wantError:    status.Error(codes.InvalidArgument, "new password is required"),
+		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.users ("name","email","password","created_at","updated_at") VALUES ('test','test@gmail.com','$2a$10$QON8RQ5kMr.JGRtPpB5RB.QbpjOxjZoIfUP3SBntExHXcGPnTUy5y','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182')`).Error)
+		},
+	},
+}
+
+func TestChangePassword(t *testing.T) {
+	ctx, client := initializeForRepositoryTest(t)
+
+	for _, tt := range changePasswordTestcases {
+		tt := tt
+
+		//tgtIds := []int{1}
+		//if !helper.Contains(tgtIds, tt.id) {
+		//	continue
+		//}
+
+		t.Run(
+			tt.name, func(t *testing.T) {
+				initDBForTests(context.Background(), t, client)
+				if tt.setup != nil {
+					tt.setup(ctx, t, client)
+				}
+
+				repo := NewUserRepository(client)
+				got, err := repo.ChangePassword(ctx, tt.in)
+
+				if tt.wantError != nil {
+					require.Equal(t, tt.wantError, err)
+				}
+
+				if tt.wantPassword != "" && tt.wantError == nil {
+					err := bcrypt.CompareHashAndPassword([]byte(got.NewPassword), []byte(tt.wantPassword))
+					assert.NoError(t, err)
+				}
+			},
+		)
+	}
+}
+
 func TestAllUserTest(t *testing.T) {
 	TestListUser(t)
 	TestGetUser(t)
 	TestCreateUser(t)
 	TestUpdateUser(t)
 	TestDeleteUser(t)
+	TestChangePassword(t)
 }

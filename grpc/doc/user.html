@@ -179,6 +179,14 @@
             <ul>
               
                 <li>
+                  <a href="#user.v1.ChangePasswordRequest"><span class="badge">M</span>ChangePasswordRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#user.v1.ChangePasswordResponse"><span class="badge">M</span>ChangePasswordResponse</a>
+                </li>
+              
+                <li>
                   <a href="#user.v1.CreateUserRequest"><span class="badge">M</span>CreateUserRequest</a>
                 </li>
               
@@ -243,6 +251,68 @@
       </div>
       <p></p>
 
+      
+        <h3 id="user.v1.ChangePasswordRequest">ChangePasswordRequest</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>old_password</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>new_password</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="user.v1.ChangePasswordResponse">ChangePasswordResponse</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>new_password</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
       
         <h3 id="user.v1.CreateUserRequest">CreateUserRequest</h3>
         <p></p>
@@ -645,6 +715,13 @@
                 <td>ListUsers</td>
                 <td><a href="#user.v1.ListUsersRequest">ListUsersRequest</a></td>
                 <td><a href="#user.v1.ListUsersResponse">ListUsersResponse</a></td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>ChangePassword</td>
+                <td><a href="#user.v1.ChangePasswordRequest">ChangePasswordRequest</a></td>
+                <td><a href="#user.v1.ChangePasswordResponse">ChangePasswordResponse</a></td>
                 <td><p></p></td>
               </tr>
             

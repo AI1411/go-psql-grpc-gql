@@ -158,3 +158,37 @@ func (r *UserRepository) DeleteUser(ctx context.Context, in *grpc.DeleteUserRequ
 
 	return grpcResponse, nil
 }
+
+func (r *UserRepository) ChangePassword(ctx context.Context, in *grpc.ChangePasswordRequest,
+) (*grpc.ChangePasswordResponse, error) {
+	var user User
+	if err := r.dbClient.Conn(ctx).First(&user, in.Id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, status.Error(codes.NotFound, "user not found")
+		}
+		return nil, status.Error(codes.Internal, "failed to get user")
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(in.OldPassword)); err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid old password")
+	}
+
+	if in.NewPassword == "" {
+		return nil, status.Error(codes.InvalidArgument, "new password is required")
+	}
+
+	hash, _ := bcrypt.GenerateFromPassword([]byte(in.NewPassword), bcrypt.DefaultCost)
+	user = User{
+		ID:        user.ID,
+		Password:  string(hash),
+		UpdatedAt: time.Now(),
+	}
+	if err := r.dbClient.Conn(ctx).Save(&user).Error; err != nil {
+		return nil, status.Error(codes.Internal, "failed to update user password")
+	}
+
+	grpcResponse := &grpc.ChangePasswordResponse{
+		NewPassword: string(hash),
+	}
+	return grpcResponse, nil
+}

@@ -57,3 +57,12 @@ func (s *UserServer) DeleteUser(ctx context.Context, in *grpc.DeleteUserRequest)
 	}
 	return res, nil
 }
+
+func (s *UserServer) ChangePassword(ctx context.Context, in *grpc.ChangePasswordRequest,
+) (*grpc.ChangePasswordResponse, error) {
+	res, err := s.r.ChangePassword(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
