@@ -41,3 +41,19 @@ func (s *UserServer) CreateUser(ctx context.Context, in *grpc.CreateUserRequest)
 	}
 	return res, nil
 }
+
+func (s *UserServer) UpdateUser(ctx context.Context, in *grpc.UpdateUserRequest) (*grpc.UpdateUserResponse, error) {
+	res, err := s.r.UpdateUser(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (s *UserServer) DeleteUser(ctx context.Context, in *grpc.DeleteUserRequest) (*grpc.DeleteUserResponse, error) {
+	res, err := s.r.DeleteUser(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}

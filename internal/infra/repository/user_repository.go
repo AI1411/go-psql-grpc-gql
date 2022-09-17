@@ -114,12 +114,10 @@ func (r *UserRepository) UpdateUser(ctx context.Context, in *grpc.UpdateUserRequ
 		return nil, status.Error(codes.Internal, "failed to get user")
 	}
 
-	hash, _ := bcrypt.GenerateFromPassword([]byte(in.Password), bcrypt.DefaultCost)
 	user = User{
 		ID:        user.ID,
 		Name:      in.Name,
 		Email:     in.Email,
-		Password:  string(hash),
 		UpdatedAt: time.Now(),
 	}
 	if err := r.dbClient.Conn(ctx).Save(&user).Error; err != nil {
