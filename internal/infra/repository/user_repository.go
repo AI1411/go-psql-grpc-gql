@@ -96,12 +96,41 @@ func (r *UserRepository) CreateUser(ctx context.Context, in *grpc.CreateUserRequ
 
 	grpcResponse := &grpc.CreateUserResponse{
 		User: &grpc.User{
-			Id:        user.ID,
-			Name:      user.Name,
-			Email:     user.Email,
-			Password:  user.Password,
-			CreatedAt: user.CreatedAt.String(),
-			UpdatedAt: user.UpdatedAt.String(),
+			Id:    user.ID,
+			Name:  user.Name,
+			Email: user.Email,
+		},
+	}
+	return grpcResponse, nil
+}
+
+func (r *UserRepository) UpdateUser(ctx context.Context, in *grpc.UpdateUserRequest,
+) (*grpc.UpdateUserResponse, error) {
+	var user User
+	if err := r.dbClient.Conn(ctx).First(&user, in.Id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, status.Error(codes.NotFound, "user not found")
+		}
+		return nil, status.Error(codes.Internal, "failed to get user")
+	}
+
+	hash, _ := bcrypt.GenerateFromPassword([]byte(in.Password), bcrypt.DefaultCost)
+	user = User{
+		ID:        user.ID,
+		Name:      in.Name,
+		Email:     in.Email,
+		Password:  string(hash),
+		UpdatedAt: time.Now(),
+	}
+	if err := r.dbClient.Conn(ctx).Save(&user).Error; err != nil {
+		return nil, status.Error(codes.Internal, "failed to update user")
+	}
+
+	grpcResponse := &grpc.UpdateUserResponse{
+		User: &grpc.User{
+			Id:    user.ID,
+			Name:  user.Name,
+			Email: user.Email,
 		},
 	}
 	return grpcResponse, nil
