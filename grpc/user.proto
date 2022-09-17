@@ -51,12 +51,6 @@ message UpdateUserResponse {
   User user = 1;
 }
 
-message ChangePasswordRequest {
-  uint32 id = 1;
-  string old_password = 2;
-  string new_password = 3;
-}
-
 message DeleteUserRequest {
   uint32 id = 1;
 }
@@ -75,6 +69,13 @@ message ListUsersRequest {
 message ListUsersResponse {
   repeated User users = 1;
 }
+
+message ChangePasswordRequest {
+  uint32 id = 1;
+  string old_password = 2;
+  string new_password = 3;
+}
+
 
 message ChangePasswordResponse {
   string new_password = 1;
