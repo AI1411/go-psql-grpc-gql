@@ -13,3 +13,9 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_DB=go_pg
       - TZ=Asia/Tokyo
+  redis:
+    image: redis:6.0.9-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: always

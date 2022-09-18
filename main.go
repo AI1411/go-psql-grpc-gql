@@ -1,12 +1,12 @@
 package main
 
 import (
-	"context"
 	"log"
 
 	"github.com/AI1411/go-psql_grpc_gql/config"
 	"github.com/AI1411/go-psql_grpc_gql/db"
 	"github.com/AI1411/go-psql_grpc_gql/internal/infra/logger"
+	"github.com/AI1411/go-psql_grpc_gql/pkg/redis"
 	"github.com/AI1411/go-psql_grpc_gql/server"
 )
 
@@ -16,12 +16,13 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to get config: %v", err)
 	}
-	log.Printf("config: %+v", cfg)
 	// get env
 	zapLogger, _ := logger.NewLogger(true)
 	client, _ := db.NewClient(cfg, zapLogger)
+	redisClient := redis.NewRedisClient(cfg)
+	defer redisClient.Close()
 
-	client.Conn(context.Background()).Exec(`SELECT * FROM public.tests;`)
+	newServer := server.NewServer(cfg, client, redisClient)
 
-	server.Handler(cfg, zapLogger)
+	newServer.Handler(cfg, zapLogger)
 }
