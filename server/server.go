@@ -4,6 +4,7 @@ import (
 	"log"
 	"net"
 
+	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
@@ -20,8 +21,10 @@ func Handler(e *env.Env, zapLogger *zap.Logger) {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	zapLoggerInterceptor := interceptor.ZapLoggerInterceptor()
-	s := grpc.NewServer(zapLoggerInterceptor)
+	s := grpc.NewServer(grpc.ChainUnaryInterceptor(
+		interceptor.ZapLoggerInterceptor(),
+		grpc_auth.UnaryServerInterceptor(interceptor.AuthFunc),
+	))
 	dbClient, err := db.NewClient(e, zapLogger)
 	testRepo := repository.NewTestRepository(dbClient)
 	userRepo := repository.NewUserRepository(dbClient)

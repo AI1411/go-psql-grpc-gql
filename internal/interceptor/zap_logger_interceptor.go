@@ -1,16 +1,14 @@
 package interceptor
 
 import (
-	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpcZap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
-	grpcCtxTags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 )
 
-func ZapLoggerInterceptor() grpc.ServerOption {
+func ZapLoggerInterceptor() grpc.UnaryServerInterceptor {
 	zapPrd, _ := zap.NewProduction()
 	opt := grpcZap.WithLevels(
 		func(c codes.Code) zapcore.Level {
@@ -25,9 +23,6 @@ func ZapLoggerInterceptor() grpc.ServerOption {
 			}
 			return l
 		})
-	return grpcMiddleware.WithUnaryServerChain(
-		grpcCtxTags.UnaryServerInterceptor(),
+	return grpcZap.UnaryServerInterceptor(zapPrd, opt)
 
-		grpcZap.UnaryServerInterceptor(zapPrd, opt),
-	)
 }
