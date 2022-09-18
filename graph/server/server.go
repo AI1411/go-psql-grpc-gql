@@ -7,10 +7,9 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/joho/godotenv"
 
+	"github.com/AI1411/go-psql_grpc_gql/config"
 	"github.com/AI1411/go-psql_grpc_gql/db"
-	"github.com/AI1411/go-psql_grpc_gql/env"
 	"github.com/AI1411/go-psql_grpc_gql/graph"
 	"github.com/AI1411/go-psql_grpc_gql/graph/generated"
 	"github.com/AI1411/go-psql_grpc_gql/internal/infra/logger"
@@ -26,18 +25,13 @@ func main() {
 		port = defaultPort
 	}
 
-	if err := godotenv.Load("env/.env"); err != nil {
-		panic("Error loading .env file")
-	}
-	e := &env.Env{
-		Hostname: os.Getenv("GOPG_HOSTNAME"),
-		Port:     os.Getenv("GOPG_PORT"),
-		User:     os.Getenv("GOPG_USERNAME"),
-		Password: os.Getenv("GOPG_PASSWORD"),
-		Dbname:   os.Getenv("GOPG_DATABASE"),
+	configPath := "../../config/config"
+	cfg, err := config.GetConfig(configPath)
+	if err != nil {
+		log.Fatalf("failed to get config: %v", err)
 	}
 	zapLogger, _ := logger.NewLogger(true)
-	client, _ := db.NewClient(e, zapLogger)
+	client, _ := db.NewClient(cfg, zapLogger)
 	tesRepo := repository.NewTestRepository(client)
 	userRepo := repository.NewUserRepository(client)
 	testServer := server.NewTestServer(tesRepo)

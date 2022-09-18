@@ -2,32 +2,26 @@ package main
 
 import (
 	"context"
-	"os"
+	"log"
 
-	"github.com/joho/godotenv"
-
+	"github.com/AI1411/go-psql_grpc_gql/config"
 	"github.com/AI1411/go-psql_grpc_gql/db"
-	"github.com/AI1411/go-psql_grpc_gql/env"
 	"github.com/AI1411/go-psql_grpc_gql/internal/infra/logger"
 	"github.com/AI1411/go-psql_grpc_gql/server"
 )
 
 func main() {
+	configPath := "./config/config"
+	cfg, err := config.GetConfig(configPath)
+	if err != nil {
+		log.Fatalf("failed to get config: %v", err)
+	}
+	log.Printf("config: %+v", cfg)
 	// get env
-	if err := godotenv.Load("env/.env"); err != nil {
-		panic("Error loading .env file")
-	}
-	e := &env.Env{
-		Hostname: os.Getenv("GOPG_HOSTNAME"),
-		Port:     os.Getenv("GOPG_PORT"),
-		User:     os.Getenv("GOPG_USERNAME"),
-		Password: os.Getenv("GOPG_PASSWORD"),
-		Dbname:   os.Getenv("GOPG_DATABASE"),
-	}
 	zapLogger, _ := logger.NewLogger(true)
-	client, _ := db.NewClient(e, zapLogger)
+	client, _ := db.NewClient(cfg, zapLogger)
 
 	client.Conn(context.Background()).Exec(`SELECT * FROM public.tests;`)
 
-	server.Handler(e, zapLogger)
+	server.Handler(cfg, zapLogger)
 }

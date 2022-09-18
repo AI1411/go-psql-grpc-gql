@@ -8,16 +8,21 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
-	"github.com/AI1411/go-psql_grpc_gql/env"
+	"github.com/AI1411/go-psql_grpc_gql/config"
 )
 
 type Client struct {
 	db *gorm.DB
 }
 
-func NewClient(e *env.Env, logger *zap.Logger) (*Client, error) {
+func NewClient(c *config.Config, logger *zap.Logger) (*Client, error) {
 	gormLogger := initGormLogger(logger)
-	db, err := open(e.Hostname, e.User, e.Password, e.Port, e.Dbname)
+	db, err := open(c.Postgres.PostgresqlHost,
+		c.Postgres.PostgresqlUser,
+		c.Postgres.PostgresqlPassword,
+		c.Postgres.PostgresqlDbname,
+		c.Postgres.PostgresqlPort,
+	)
 
 	db.Logger = db.Logger.LogMode(gormLogger.LogLevel)
 	if err != nil {
@@ -27,7 +32,7 @@ func NewClient(e *env.Env, logger *zap.Logger) (*Client, error) {
 	return &Client{db: db}, nil
 }
 
-func open(host, username, password, port, database string) (*gorm.DB, error) {
+func open(host, username, password, database, port string) (*gorm.DB, error) {
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Tokyo",
 		host, username, password, database, port,
