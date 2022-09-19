@@ -12,11 +12,11 @@ jobs:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: go_pg_test
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: root
+          POSTGRES_DB: go_pg
         ports:
-          - 25432:5432
+          - 15432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -38,7 +38,7 @@ jobs:
           sudo mv migrate.linux-amd64 /usr/bin/migrate
           which migrate
       - name: run migrations
-        run: make migrate-for-test
+        run: make migrate
 
       - name: Test
         run: go test -v ./...
