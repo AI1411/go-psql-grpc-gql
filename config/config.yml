@@ -1,0 +1,23 @@
+redis:
+  RedisAddr: redis:6379
+  RedisPassword:
+  RedisDb: 0
+  RedisDefaultdb: 0
+  MinIdleConns: 200
+  PoolSize: 12000
+  PoolTimeout: 240
+  Password: ""
+  DB: 0
+
+session:
+  Name: session-id
+  Prefix: api-session
+  Expire: 3600
+
+postgres:
+  PostgresqlHost: localhost
+  PostgresqlPort: 15432
+  PostgresqlUser: root
+  PostgresqlPassword: root
+  PostgresqlDbname: go_pg
+  PostgresqlSslmode: false
