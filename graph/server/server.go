@@ -25,7 +25,7 @@ func main() {
 		port = defaultPort
 	}
 
-	configPath := "../../config/config"
+	configPath := "./config/config"
 	cfg, err := config.GetConfig(configPath)
 	if err != nil {
 		log.Fatalf("Loading config: %v", err)
