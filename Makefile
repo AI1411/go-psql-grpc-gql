@@ -9,5 +9,8 @@ gen-test-proto:
 gen-user-proto:
 	protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --doc_out=./grpc/doc --doc_opt=html,user.html grpc/user.proto
 
+gen-task-proto:
+	protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --doc_out=./grpc/doc --doc_opt=html,task.html grpc/task.proto
+
 test:
 	richgo test -v ./...
