@@ -1,29 +1,21 @@
 version: '3'
 
 services:
-  db:
-    image: postgres:latest
+  psql:
+    build:
+      context: ./docker/psql
+      dockerfile: Dockerfile
+    image: psql
     container_name: postgres
     ports:
       - "15432:5432"
     volumes:
       - ./internal/db/migrations:/docker-entrypoint-initdb.d
+      - ./docker/psql/data:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=root
       - POSTGRES_USER=root
       - POSTGRES_DB=go_pg
-      - TZ=Asia/Tokyo
-  test_db:
-    image: postgres:latest
-    container_name: postgres_test
-    ports:
-      - "25432:5432"
-    volumes:
-      - ./db/migrations:/docker-entrypoint-initdb.d
-    environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=go_pg_test
       - TZ=Asia/Tokyo
 
   redis:
@@ -32,3 +24,7 @@ services:
     ports:
       - "6379:6379"
     restart: always
+
+volumes:
+  psql_data:
+    driver: local
