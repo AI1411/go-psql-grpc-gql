@@ -20,6 +20,8 @@ message Task {
   bool completed = 5;
   uint32 user_id = 6;
   string status = 7;
+  string created_at = 8;
+  string updated_at = 9;
 }
 
 message CreateTaskRequest {
@@ -45,10 +47,13 @@ message GetTaskResponse {
 
 message ListTasksRequest {
   string title = 1;
-  string due_date = 2;
-  bool completed = 3;
-  uint32 user_id = 4;
-  string status = 5;
+  string due_date_from = 2;
+  string due_date_to = 3;
+  optional bool completed = 4;
+  optional uint32 user_id = 5;
+  string status = 6;
+  string created_at_from = 7;
+  string created_at_to = 8;
 }
 
 message ListTasksResponse {

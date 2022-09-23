@@ -5,7 +5,6 @@ import (
 	"net"
 
 	"github.com/go-redis/redis/v8"
-	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
@@ -28,20 +27,21 @@ func NewGPServer(zapLogger *zap.Logger, cfg *config.Config, dbClient *db.Client,
 }
 
 func (s *Server) Handler() {
-	addr := ":50051"
-	lis, err := net.Listen("tcp", addr)
+	lis, err := net.Listen("tcp", s.cfg.Server.Port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	server := grpc.NewServer(grpc.ChainUnaryInterceptor(
 		interceptor.ZapLoggerInterceptor(),
-		grpc_auth.UnaryServerInterceptor(interceptor.AuthFunc),
+		//grpc_auth.UnaryServerInterceptor(interceptor.AuthFunc),
 	))
 	dbClient, err := db.NewClient(s.cfg, s.zapLogger)
 	testRepo := repository.NewTestRepository(dbClient)
 	userRepo := repository.NewUserRepository(dbClient)
+	taskRepo := repository.NewTaskRepository(dbClient)
 	pb.RegisterTestServiceServer(server, NewTestServer(testRepo))
 	pb.RegisterUserServiceServer(server, NewUserServer(userRepo))
+	pb.RegisterTaskServiceServer(server, NewTaskServer(taskRepo))
 
 	if err := server.Serve(lis); err != nil {
 

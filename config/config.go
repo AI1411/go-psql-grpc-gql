@@ -3,15 +3,31 @@ package config
 import (
 	"errors"
 	"log"
+	"time"
 
 	"github.com/spf13/viper"
 )
 
 type Config struct {
+	Server   ServerConfig
 	Postgres PostgresConfig
 	Redis    RedisConfig
 	Cookie   Cookie
 	Session  Session
+}
+
+type ServerConfig struct {
+	Port              string
+	ReadTimeout       time.Duration
+	WriteTimeout      time.Duration
+	SSL               bool
+	CtxDefaultTimeout time.Duration
+	CSRF              bool
+	Debug             bool
+	MaxConnectionIdle time.Duration
+	Timeout           time.Duration
+	MaxConnectionAge  time.Duration
+	Time              time.Duration
 }
 
 type PostgresConfig struct {

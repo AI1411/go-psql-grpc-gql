@@ -1,3 +1,16 @@
+server:
+  Port: :50051
+  ReadTimeout: 5
+  WriteTimeout: 5
+  SSL: true
+  CtxDefaultTimeout: 12
+  CSRF: true
+  Debug: false
+  MaxConnectionIdle: 5
+  Timeout: 15
+  MaxConnectionAge: 5
+  Time: 120
+
 redis:
   RedisAddr: redis:6379
   RedisPassword:

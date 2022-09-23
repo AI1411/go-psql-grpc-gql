@@ -13,6 +13,7 @@ import (
 func main() {
 	configPath := "./config/config"
 	cfg, err := config.GetConfig(configPath)
+	log.Printf("config: %+v", cfg)
 	if err != nil {
 		log.Fatalf("Loading config: %v", err)
 	}
