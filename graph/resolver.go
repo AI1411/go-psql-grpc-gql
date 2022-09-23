@@ -11,4 +11,5 @@ import (
 type Resolver struct {
 	TestServer *server.TestServer
 	UserServer *server.UserServer
+	TaskServer *server.TaskServer
 }

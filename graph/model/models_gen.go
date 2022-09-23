@@ -2,6 +2,14 @@
 
 package model
 
+type CreateTaskInput struct {
+	Title       string  `json:"title"`
+	Description *string `json:"description"`
+	DueDate     *string `json:"dueDate"`
+	UserID      *int    `json:"user_id"`
+	Status      string  `json:"status"`
+}
+
 type CreateTest struct {
 	Name string `json:"name"`
 }
@@ -10,6 +18,18 @@ type CreateUserInput struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+type Task struct {
+	ID          int    `json:"id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	DueDate     string `json:"dueDate"`
+	Completed   bool   `json:"completed"`
+	UserID      int    `json:"user_id"`
+	Status      string `json:"status"`
+	CreatedAt   string `json:"createdAt"`
+	UpdatedAt   string `json:"updatedAt"`
 }
 
 type Test struct {

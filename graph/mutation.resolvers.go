@@ -12,7 +12,6 @@ import (
 	"github.com/AI1411/go-psql_grpc_gql/grpc"
 )
 
-// CreateTest is the resolver for the createTest field.
 func (r *mutationResolver) CreateTest(ctx context.Context, input model.CreateTest) (*model.Test, error) {
 	test, err := r.TestServer.CreateTest(ctx, &grpc.CreateTestRequest{
 		Name: input.Name,
@@ -29,7 +28,6 @@ func (r *mutationResolver) CreateTest(ctx context.Context, input model.CreateTes
 	return response, nil
 }
 
-// UpdateTest is the resolver for the updateTest field.
 func (r *mutationResolver) UpdateTest(ctx context.Context, input model.UpdateTest) (*model.Test, error) {
 	test, err := r.TestServer.UpdateTest(ctx, &grpc.UpdateTestRequest{
 		Id:   uint32(input.ID),
@@ -47,7 +45,6 @@ func (r *mutationResolver) UpdateTest(ctx context.Context, input model.UpdateTes
 	return response, nil
 }
 
-// DeleteTest is the resolver for the deleteTest field.
 func (r *mutationResolver) DeleteTest(ctx context.Context, id int) (*model.Test, error) {
 	test, err := r.TestServer.DeleteTest(ctx, &grpc.DeleteTestRequest{
 		Id: uint32(id),
@@ -64,7 +61,6 @@ func (r *mutationResolver) DeleteTest(ctx context.Context, id int) (*model.Test,
 	return response, nil
 }
 
-// CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUserInput) (*model.User, error) {
 	user, err := r.UserServer.CreateUser(ctx, &grpc.CreateUserRequest{
 		Name:     input.Name,
@@ -87,14 +83,40 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUse
 	return response, nil
 }
 
-// UpdateUser is the resolver for the updateUser field.
 func (r *mutationResolver) UpdateUser(ctx context.Context, input model.UpdateUserInput) (*model.User, error) {
 	panic(fmt.Errorf("not implemented: UpdateUser - updateUser"))
 }
 
-// DeleteUser is the resolver for the deleteUser field.
 func (r *mutationResolver) DeleteUser(ctx context.Context, id int) (*model.User, error) {
 	panic(fmt.Errorf("not implemented: DeleteUser - deleteUser"))
+}
+
+func (r *mutationResolver) CreateTask(ctx context.Context, input model.CreateTaskInput) (*model.Task, error) {
+	task, err := r.TaskServer.CreateTask(ctx, &grpc.CreateTaskRequest{
+		Title:       input.Title,
+		Description: *input.Description,
+		UserId:      uint32(*input.UserID),
+		Status:      input.Status,
+		DueDate:     *input.DueDate,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	response := &model.Task{
+		ID:          int(task.Task.Id),
+		Title:       task.Task.Title,
+		Description: task.Task.Description,
+		UserID:      int(task.Task.UserId),
+		Completed:   task.Task.Completed,
+		Status:      task.Task.Status,
+		DueDate:     task.Task.DueDate,
+		CreatedAt:   task.Task.CreatedAt,
+		UpdatedAt:   task.Task.UpdatedAt,
+	}
+
+	return response, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

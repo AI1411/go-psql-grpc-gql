@@ -6,4 +6,6 @@ type Mutation {
     createUser(input: CreateUserInput!): User!
     updateUser(input: UpdateUserInput!): User!
     deleteUser(id: Int!): User!
+
+    createTask(input: CreateTaskInput!): Task!
 }

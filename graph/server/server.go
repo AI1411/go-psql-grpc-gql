@@ -35,12 +35,15 @@ func main() {
 	client, _ := db.NewClient(cfg, zapLogger)
 	tesRepo := repository.NewTestRepository(client)
 	userRepo := repository.NewUserRepository(client)
+	taskRepo := repository.NewTaskRepository(client)
 	testServer := server.NewTestServer(tesRepo)
 	userServer := server.NewUserServer(userRepo)
+	taskServer := server.NewTaskServer(taskRepo)
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{
 		TestServer: testServer,
 		UserServer: userServer,
+		TaskServer: taskServer,
 	}}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))

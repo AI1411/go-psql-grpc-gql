@@ -1,0 +1,19 @@
+type Task {
+    id: Int!
+    title: String!
+    description: String!
+    dueDate: String!
+    completed: Boolean!
+    user_id: Int!
+    status: String!
+    createdAt: String!
+    updatedAt: String!
+}
+
+input CreateTaskInput {
+    title: String!
+    description: String
+    dueDate: String
+    user_id: Int
+    status: String!
+}
