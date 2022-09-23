@@ -61,3 +61,12 @@ models:
       - github.com/99designs/gqlgen/graphql.Int
       - github.com/99designs/gqlgen/graphql.Int64
       - github.com/99designs/gqlgen/graphql.Int32
+  Uint:
+    model:
+    - github.com/AI1411/go-psql_grpc_gql/graph/model.Uint
+  Uint32:
+    model:
+    - github.com/AI1411/go-psql_grpc_gql/graph/model.Uint32
+  Uint64:
+    model:
+    - github.com/AI1411/go-psql_grpc_gql/graph/model.Uint64

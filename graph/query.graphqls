@@ -5,5 +5,5 @@ type Query {
     users: [User!]!
     user(id: Int!): User!
 
-    tasks: [Task!]!
+    tasks(input: ListTaskInput): [Task!]!
 }

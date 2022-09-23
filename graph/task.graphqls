@@ -10,6 +10,13 @@ type Task {
     updatedAt: String!
 }
 
+input ListTaskInput {
+    title: String!
+    completed: Boolean
+    user_id: Uint32
+    status: String!
+}
+
 input CreateTaskInput {
     title: String!
     description: String
@@ -17,3 +24,5 @@ input CreateTaskInput {
     user_id: Int
     status: String!
 }
+
+scalar Uint32

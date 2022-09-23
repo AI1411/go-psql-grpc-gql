@@ -20,6 +20,13 @@ type CreateUserInput struct {
 	Password string `json:"password"`
 }
 
+type ListTaskInput struct {
+	Title     string  `json:"title"`
+	Completed *bool   `json:"completed"`
+	UserID    *uint32 `json:"user_id"`
+	Status    string  `json:"status"`
+}
+
 type Task struct {
 	ID          int    `json:"id"`
 	Title       string `json:"title"`
