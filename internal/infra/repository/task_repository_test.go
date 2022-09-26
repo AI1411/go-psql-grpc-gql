@@ -401,6 +401,72 @@ func TestGetTask(t *testing.T) {
 	}
 }
 
+var createTaskTestcases = []struct {
+	id        int
+	name      string
+	in        *grpc.CreateTaskRequest
+	want      *grpc.CreateTaskResponse
+	wantError error
+	setup     func(ctx context.Context, t *testing.T, client *db.Client)
+}{
+	{
+		id:   1,
+		name: "task 作成正常系<TID:1>",
+		in: &grpc.CreateTaskRequest{
+			Title:       "title",
+			Description: "test",
+			DueDate:     "2022-09-10T08:47:22Z",
+			UserId:      1,
+			Status:      "waiting",
+		},
+		want: &grpc.CreateTaskResponse{
+			Task: &grpc.Task{
+				Id:          1,
+				Title:       "title",
+				Description: "test",
+				DueDate:     "2022-09-10T08:47:22Z",
+				Completed:   false,
+				UserId:      1,
+				Status:      "waiting",
+			},
+		},
+	},
+}
+
+func TestCreateTask(t *testing.T) {
+	ctx, client := initializeForRepositoryTest(t)
+
+	for _, tt := range createTaskTestcases {
+		tt := tt
+
+		//tgtIds := []int{1}
+		//if !helper.Contains(tgtIds, tt.id) {
+		//	continue
+		//}
+
+		t.Run(
+			tt.name, func(t *testing.T) {
+				initDBForTests(context.Background(), t, client)
+				if tt.setup != nil {
+					tt.setup(ctx, t, client)
+				}
+
+				repo := NewTaskRepository(client)
+				got, err := repo.CreateTask(ctx, tt.in)
+
+				if tt.wantError != nil {
+					require.Equal(t, tt.wantError, err)
+				}
+
+				if tt.want != nil {
+					assert.Equal(t, tt.want, got)
+				}
+			},
+		)
+
+	}
+}
+
 func TestAllTaskTest(t *testing.T) {
 	TestListTask(t)
 	TestGetTask(t)
