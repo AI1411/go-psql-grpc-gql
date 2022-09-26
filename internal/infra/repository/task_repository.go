@@ -131,11 +131,14 @@ func (r *TaskRepository) UpdateTask(
 	}
 
 	task = Task{
-		ID:          task.ID,
-		Title:       task.Title,
-		Description: task.Description,
-		DueDate:     task.DueDate,
+		Title:       *in.Title,
+		Description: *in.Description,
+		DueDate:     *in.DueDate,
+		Completed:   *in.Completed,
+		Status:      *in.Status,
+		UserID:      *in.UserId,
 	}
+
 	if err := r.dbClient.Conn(ctx).Save(&task).Error; err != nil {
 		return nil, status.Error(codes.Internal, "failed to update user")
 	}
@@ -153,4 +156,20 @@ func (r *TaskRepository) UpdateTask(
 	}
 
 	return grpcResponse, nil
+}
+
+func (r *TaskRepository) DeleteTask(ctx context.Context, in *grpc.DeleteTaskRequest) (*grpc.DeleteTaskResponse, error) {
+	var task Task
+	if err := r.dbClient.Conn(ctx).First(&task, in.Id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, status.Error(codes.NotFound, "user not found")
+		}
+		return nil, status.Error(codes.Internal, "failed to get user")
+	}
+
+	if err := r.dbClient.Conn(ctx).Delete(&task).Error; err != nil {
+		return nil, status.Error(codes.Internal, "failed to delete user")
+	}
+
+	return &grpc.DeleteTaskResponse{}, nil
 }

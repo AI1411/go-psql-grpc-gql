@@ -10,6 +10,7 @@ service TaskService {
   rpc ListTasks(ListTasksRequest) returns (ListTasksResponse) {}
   rpc UpdateTask(UpdateTaskRequest) returns (UpdateTaskResponse) {}
   rpc DeleteTask(DeleteTaskRequest) returns (DeleteTaskResponse) {}
+  rpc ChangeStatus(ChangeStatusRequest) returns (ChangeStatusResponse) {}
 }
 
 message Task {
@@ -62,11 +63,12 @@ message ListTasksResponse {
 
 message UpdateTaskRequest {
   string id = 1;
-  string title = 2;
-  string description = 3;
-  string due_date = 4;
-  bool completed = 5;
-  string status = 6;
+  optional string title = 2;
+  optional string description = 3;
+  optional string due_date = 4;
+  optional bool completed = 5;
+  optional string status = 6;
+  optional uint32 user_id = 7;
 }
 
 message UpdateTaskResponse {
@@ -78,3 +80,12 @@ message DeleteTaskRequest {
 }
 
 message DeleteTaskResponse {}
+
+message ChangeStatusRequest {
+  string id = 1;
+  string status = 2;
+}
+
+message ChangeStatusResponse {
+  Task task = 1;
+}

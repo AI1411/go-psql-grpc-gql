@@ -179,6 +179,14 @@
             <ul>
               
                 <li>
+                  <a href="#task.v1.ChangeStatusRequest"><span class="badge">M</span>ChangeStatusRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#task.v1.ChangeStatusResponse"><span class="badge">M</span>ChangeStatusResponse</a>
+                </li>
+              
+                <li>
                   <a href="#task.v1.CreateTaskRequest"><span class="badge">M</span>CreateTaskRequest</a>
                 </li>
               
@@ -243,6 +251,61 @@
       </div>
       <p></p>
 
+      
+        <h3 id="task.v1.ChangeStatusRequest">ChangeStatusRequest</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>status</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="task.v1.ChangeStatusResponse">ChangeStatusResponse</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>task</td>
+                  <td><a href="#task.v1.Task">Task</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
       
         <h3 id="task.v1.CreateTaskRequest">CreateTaskRequest</h3>
         <p></p>
@@ -603,35 +666,42 @@
                 <tr>
                   <td>title</td>
                   <td><a href="#string">string</a></td>
-                  <td></td>
+                  <td>optional</td>
                   <td><p> </p></td>
                 </tr>
               
                 <tr>
                   <td>description</td>
                   <td><a href="#string">string</a></td>
-                  <td></td>
+                  <td>optional</td>
                   <td><p> </p></td>
                 </tr>
               
                 <tr>
                   <td>due_date</td>
                   <td><a href="#string">string</a></td>
-                  <td></td>
+                  <td>optional</td>
                   <td><p> </p></td>
                 </tr>
               
                 <tr>
                   <td>completed</td>
                   <td><a href="#bool">bool</a></td>
-                  <td></td>
+                  <td>optional</td>
                   <td><p> </p></td>
                 </tr>
               
                 <tr>
                   <td>status</td>
                   <td><a href="#string">string</a></td>
-                  <td></td>
+                  <td>optional</td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>user_id</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td>optional</td>
                   <td><p> </p></td>
                 </tr>
               
@@ -712,6 +782,13 @@
                 <td>DeleteTask</td>
                 <td><a href="#task.v1.DeleteTaskRequest">DeleteTaskRequest</a></td>
                 <td><a href="#task.v1.DeleteTaskResponse">DeleteTaskResponse</a></td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>ChangeStatus</td>
+                <td><a href="#task.v1.ChangeStatusRequest">ChangeStatusRequest</a></td>
+                <td><a href="#task.v1.ChangeStatusResponse">ChangeStatusResponse</a></td>
                 <td><p></p></td>
               </tr>
             
