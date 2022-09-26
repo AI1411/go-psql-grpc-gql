@@ -2,6 +2,11 @@ package repository
 
 import (
 	"context"
+	"errors"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	"gorm.io/gorm"
 
 	"github.com/AI1411/go-psql_grpc_gql/db"
 	"github.com/AI1411/go-psql_grpc_gql/grpc"
@@ -60,6 +65,32 @@ func (r *TaskRepository) ListTasks(
 	return grpcResponse, nil
 }
 
+func (r *TaskRepository) GetTask(
+	ctx context.Context, in *grpc.GetTaskRequest,
+) (*grpc.GetTaskResponse, error) {
+	var task Task
+	if err := r.dbClient.Conn(ctx).First(&task, in.Id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, status.Error(codes.NotFound, "user not found")
+		}
+		return nil, status.Error(codes.Internal, "failed to get user")
+	}
+
+	grpcResponse := &grpc.GetTaskResponse{
+		Task: &grpc.Task{
+			Id:          task.ID,
+			Title:       task.Title,
+			Description: task.Description,
+			DueDate:     task.DueDate,
+			Completed:   task.Completed,
+			UserId:      task.UserID,
+			Status:      task.Status,
+		},
+	}
+
+	return grpcResponse, nil
+}
+
 func (r *TaskRepository) CreateTask(
 	ctx context.Context, in *grpc.CreateTaskRequest,
 ) (*grpc.CreateTaskResponse, error) {
@@ -74,6 +105,42 @@ func (r *TaskRepository) CreateTask(
 	r.dbClient.Conn(ctx).Create(&task)
 
 	grpcResponse := &grpc.CreateTaskResponse{
+		Task: &grpc.Task{
+			Id:          task.ID,
+			Title:       task.Title,
+			Description: task.Description,
+			DueDate:     task.DueDate,
+			Completed:   task.Completed,
+			UserId:      task.UserID,
+			Status:      task.Status,
+		},
+	}
+
+	return grpcResponse, nil
+}
+
+func (r *TaskRepository) UpdateTask(
+	ctx context.Context, in *grpc.UpdateTaskRequest,
+) (*grpc.UpdateTaskResponse, error) {
+	var task Task
+	if err := r.dbClient.Conn(ctx).First(&task, in.Id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, status.Error(codes.NotFound, "user not found")
+		}
+		return nil, status.Error(codes.Internal, "failed to get user")
+	}
+
+	task = Task{
+		ID:          task.ID,
+		Title:       task.Title,
+		Description: task.Description,
+		DueDate:     task.DueDate,
+	}
+	if err := r.dbClient.Conn(ctx).Save(&task).Error; err != nil {
+		return nil, status.Error(codes.Internal, "failed to update user")
+	}
+
+	grpcResponse := &grpc.UpdateTaskResponse{
 		Task: &grpc.Task{
 			Id:          task.ID,
 			Title:       task.Title,
