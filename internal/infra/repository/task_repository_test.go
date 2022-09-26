@@ -6,6 +6,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/AI1411/go-psql_grpc_gql/db"
 	"github.com/AI1411/go-psql_grpc_gql/grpc"
@@ -319,6 +321,87 @@ func TestListTask(t *testing.T) {
 	}
 }
 
+var getTaskTestcases = []struct {
+	id        int
+	name      string
+	in        *grpc.GetTaskRequest
+	want      *grpc.GetTaskResponse
+	wantError error
+	setup     func(ctx context.Context, t *testing.T, client *db.Client)
+}{
+	{
+		id:   1,
+		name: "task詳細正常系<TID:1>",
+		in: &grpc.GetTaskRequest{
+			Id: 1,
+		},
+		want: &grpc.GetTaskResponse{
+			Task: &grpc.Task{
+				Id:          1,
+				Title:       "title",
+				Description: "test",
+				DueDate:     "2022-09-10T08:47:22Z",
+				Completed:   false,
+				UserId:      1,
+				Status:      "waiting",
+				CreatedAt:   "2022-09-16 08:47:22.182 +0000 UTC",
+				UpdatedAt:   "2022-09-16 08:47:22.182 +0000 UTC",
+			},
+		},
+		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tasks ("title","description","due_date","completed","user_id", "status", "created_at", "updated_at") VALUES ('title','test','2022-09-10 08:47:22',false,1, 'waiting','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tasks ("title","description","due_date","completed","user_id", "status", "created_at", "updated_at") VALUES ('task','desc','2022-09-22 08:47:22',true,2, 'done','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
+		},
+	},
+	{
+		id:   2,
+		name: "task詳細異常系 レコードが見つからない場合、NotFoundエラーになること<TID:2>",
+		in: &grpc.GetTaskRequest{
+			Id: 3,
+		},
+		wantError: status.Error(codes.NotFound, "task not found"),
+		setup: func(ctx context.Context, t *testing.T, client *db.Client) {
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tasks ("title","description","due_date","completed","user_id", "status", "created_at", "updated_at") VALUES ('title','test','2022-09-10 08:47:22',false,1, 'waiting','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
+			require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tasks ("title","description","due_date","completed","user_id", "status", "created_at", "updated_at") VALUES ('task','desc','2022-09-22 08:47:22',true,2, 'done','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
+		},
+	},
+}
+
+func TestGetTask(t *testing.T) {
+	ctx, client := initializeForRepositoryTest(t)
+
+	for _, tt := range getTaskTestcases {
+		tt := tt
+
+		//tgtIds := []int{1}
+		//if !helper.Contains(tgtIds, tt.id) {
+		//	continue
+		//}
+
+		t.Run(
+			tt.name, func(t *testing.T) {
+				initDBForTests(context.Background(), t, client)
+				if tt.setup != nil {
+					tt.setup(ctx, t, client)
+				}
+
+				repo := NewTaskRepository(client)
+				got, err := repo.GetTask(ctx, tt.in)
+
+				if tt.wantError != nil {
+					require.Equal(t, tt.wantError, err)
+				}
+
+				if tt.want != nil {
+					assert.Equal(t, tt.want, got)
+				}
+			},
+		)
+
+	}
+}
+
 func TestAllTaskTest(t *testing.T) {
 	TestListTask(t)
+	TestGetTask(t)
 }

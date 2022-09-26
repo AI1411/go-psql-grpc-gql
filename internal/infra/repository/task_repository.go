@@ -78,7 +78,7 @@ func (r *TaskRepository) GetTask(
 	var task Task
 	if err := r.dbClient.Conn(ctx).First(&task, in.Id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, status.Error(codes.NotFound, "user not found")
+			return nil, status.Error(codes.NotFound, "task not found")
 		}
 		return nil, status.Error(codes.Internal, "failed to get user")
 	}
@@ -92,6 +92,8 @@ func (r *TaskRepository) GetTask(
 			Completed:   task.Completed,
 			UserId:      task.UserID,
 			Status:      task.Status,
+			CreatedAt:   task.CreatedAt.String(),
+			UpdatedAt:   task.UpdatedAt.String(),
 		},
 	}
 
