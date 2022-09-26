@@ -7,6 +7,10 @@ type User {
     updated_at: String!
 }
 
+type ChangePasswordResponse {
+    password: String!
+}
+
 input CreateUserInput {
     name: String!
     email: String!
@@ -18,4 +22,10 @@ input UpdateUserInput {
     name: String
     email: String
     password: String
+}
+
+input ChangePasswordInput {
+    id: Int!
+    old_password: String!
+    new_password: String!
 }

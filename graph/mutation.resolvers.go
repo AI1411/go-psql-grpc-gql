@@ -5,7 +5,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/AI1411/go-psql_grpc_gql/graph/generated"
 	"github.com/AI1411/go-psql_grpc_gql/graph/model"
@@ -89,12 +88,61 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUse
 
 // UpdateUser is the resolver for the updateUser field.
 func (r *mutationResolver) UpdateUser(ctx context.Context, input model.UpdateUserInput) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: UpdateUser - updateUser"))
+	user, err := r.UserServer.UpdateUser(ctx, &grpc.UpdateUserRequest{
+		Id:       uint32(input.ID),
+		Name:     *input.Name,
+		Email:    *input.Email,
+		Password: *input.Password,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	response := &model.User{
+		ID:       int(user.User.Id),
+		Name:     user.User.Name,
+		Email:    user.User.Email,
+		Password: user.User.Password,
+	}
+
+	return response, nil
 }
 
 // DeleteUser is the resolver for the deleteUser field.
 func (r *mutationResolver) DeleteUser(ctx context.Context, id int) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: DeleteUser - deleteUser"))
+	user, err := r.UserServer.DeleteUser(ctx, &grpc.DeleteUserRequest{
+		Id: uint32(id),
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	response := &model.User{
+		ID: int(user.User.Id),
+	}
+
+	return response, nil
+}
+
+// ChangePassword is the resolver for the changePassword field.
+func (r *mutationResolver) ChangePassword(ctx context.Context, input model.ChangePasswordInput) (*model.ChangePasswordResponse, error) {
+	password, err := r.UserServer.ChangePassword(ctx, &grpc.ChangePasswordRequest{
+		Id:          uint32(input.ID),
+		OldPassword: input.OldPassword,
+		NewPassword: input.NewPassword,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	response := &model.ChangePasswordResponse{
+		Password: password.NewPassword,
+	}
+
+	return response, nil
 }
 
 // CreateTask is the resolver for the createTask field.

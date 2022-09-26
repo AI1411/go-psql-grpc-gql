@@ -2,6 +2,16 @@
 
 package model
 
+type ChangePasswordInput struct {
+	ID          int    `json:"id"`
+	OldPassword string `json:"old_password"`
+	NewPassword string `json:"new_password"`
+}
+
+type ChangePasswordResponse struct {
+	Password string `json:"password"`
+}
+
 type CreateTaskInput struct {
 	Title       string  `json:"title"`
 	Description *string `json:"description"`

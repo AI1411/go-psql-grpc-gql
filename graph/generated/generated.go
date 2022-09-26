@@ -44,17 +44,23 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
+	ChangePasswordResponse struct {
+		Password func(childComplexity int) int
+	}
+
 	Mutation struct {
-		CreateTask func(childComplexity int, input model.CreateTaskInput) int
-		CreateTest func(childComplexity int, input model.CreateTest) int
-		CreateUser func(childComplexity int, input model.CreateUserInput) int
-		DeleteTest func(childComplexity int, id int) int
-		DeleteUser func(childComplexity int, id int) int
-		UpdateTest func(childComplexity int, input model.UpdateTest) int
-		UpdateUser func(childComplexity int, input model.UpdateUserInput) int
+		ChangePassword func(childComplexity int, input model.ChangePasswordInput) int
+		CreateTask     func(childComplexity int, input model.CreateTaskInput) int
+		CreateTest     func(childComplexity int, input model.CreateTest) int
+		CreateUser     func(childComplexity int, input model.CreateUserInput) int
+		DeleteTest     func(childComplexity int, id int) int
+		DeleteUser     func(childComplexity int, id int) int
+		UpdateTest     func(childComplexity int, input model.UpdateTest) int
+		UpdateUser     func(childComplexity int, input model.UpdateUserInput) int
 	}
 
 	Query struct {
+		Task  func(childComplexity int, id int) int
 		Tasks func(childComplexity int, input *model.ListTaskInput) int
 		Test  func(childComplexity int, input int) int
 		Tests func(childComplexity int) int
@@ -96,6 +102,7 @@ type MutationResolver interface {
 	CreateUser(ctx context.Context, input model.CreateUserInput) (*model.User, error)
 	UpdateUser(ctx context.Context, input model.UpdateUserInput) (*model.User, error)
 	DeleteUser(ctx context.Context, id int) (*model.User, error)
+	ChangePassword(ctx context.Context, input model.ChangePasswordInput) (*model.ChangePasswordResponse, error)
 	CreateTask(ctx context.Context, input model.CreateTaskInput) (*model.Task, error)
 }
 type QueryResolver interface {
@@ -104,6 +111,7 @@ type QueryResolver interface {
 	Users(ctx context.Context) ([]*model.User, error)
 	User(ctx context.Context, id int) (*model.User, error)
 	Tasks(ctx context.Context, input *model.ListTaskInput) ([]*model.Task, error)
+	Task(ctx context.Context, id int) (*model.Task, error)
 }
 
 type executableSchema struct {
@@ -120,6 +128,25 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	ec := executionContext{nil, e}
 	_ = ec
 	switch typeName + "." + field {
+
+	case "ChangePasswordResponse.password":
+		if e.complexity.ChangePasswordResponse.Password == nil {
+			break
+		}
+
+		return e.complexity.ChangePasswordResponse.Password(childComplexity), true
+
+	case "Mutation.changePassword":
+		if e.complexity.Mutation.ChangePassword == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_changePassword_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ChangePassword(childComplexity, args["input"].(model.ChangePasswordInput)), true
 
 	case "Mutation.createTask":
 		if e.complexity.Mutation.CreateTask == nil {
@@ -204,6 +231,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateUser(childComplexity, args["input"].(model.UpdateUserInput)), true
+
+	case "Query.task":
+		if e.complexity.Query.Task == nil {
+			break
+		}
+
+		args, err := ec.field_Query_task_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Task(childComplexity, args["id"].(int)), true
 
 	case "Query.tasks":
 		if e.complexity.Query.Tasks == nil {
@@ -382,6 +421,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
 	ec := executionContext{rc, e}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputChangePasswordInput,
 		ec.unmarshalInputCreateTaskInput,
 		ec.unmarshalInputCreateTest,
 		ec.unmarshalInputCreateUserInput,
@@ -456,6 +496,7 @@ var sources = []*ast.Source{
     createUser(input: CreateUserInput!): User!
     updateUser(input: UpdateUserInput!): User!
     deleteUser(id: Int!): User!
+    changePassword(input: ChangePasswordInput!): ChangePasswordResponse!
 
     createTask(input: CreateTaskInput!): Task!
 }`, BuiltIn: false},
@@ -467,6 +508,7 @@ var sources = []*ast.Source{
     user(id: Int!): User!
 
     tasks(input: ListTaskInput): [Task!]!
+    task(id: Int!): Task!
 }`, BuiltIn: false},
 	{Name: "../task.graphqls", Input: `type Task {
     id: Int!
@@ -518,6 +560,10 @@ input UpdateTest {
     updated_at: String!
 }
 
+type ChangePasswordResponse {
+    password: String!
+}
+
 input CreateUserInput {
     name: String!
     email: String!
@@ -529,6 +575,12 @@ input UpdateUserInput {
     name: String
     email: String
     password: String
+}
+
+input ChangePasswordInput {
+    id: Int!
+    old_password: String!
+    new_password: String!
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -536,6 +588,21 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_Mutation_changePassword_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.ChangePasswordInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNChangePasswordInput2githubᚗcomᚋAI1411ᚋgoᚑpsql_grpc_gqlᚋgraphᚋmodelᚐChangePasswordInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
 
 func (ec *executionContext) field_Mutation_createTask_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -657,6 +724,21 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 	return args, nil
 }
 
+func (ec *executionContext) field_Query_task_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_tasks_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -739,6 +821,50 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 // endregion ************************** directives.gotpl **************************
 
 // region    **************************** field.gotpl *****************************
+
+func (ec *executionContext) _ChangePasswordResponse_password(ctx context.Context, field graphql.CollectedField, obj *model.ChangePasswordResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ChangePasswordResponse_password(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Password, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ChangePasswordResponse_password(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ChangePasswordResponse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
 
 func (ec *executionContext) _Mutation_createTest(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_createTest(ctx, field)
@@ -1130,6 +1256,65 @@ func (ec *executionContext) fieldContext_Mutation_deleteUser(ctx context.Context
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_changePassword(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_changePassword(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ChangePassword(rctx, fc.Args["input"].(model.ChangePasswordInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.ChangePasswordResponse)
+	fc.Result = res
+	return ec.marshalNChangePasswordResponse2ᚖgithubᚗcomᚋAI1411ᚋgoᚑpsql_grpc_gqlᚋgraphᚋmodelᚐChangePasswordResponse(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_changePassword(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "password":
+				return ec.fieldContext_ChangePasswordResponse_password(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ChangePasswordResponse", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_changePassword_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Mutation_createTask(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_createTask(ctx, field)
 	if err != nil {
@@ -1512,6 +1697,81 @@ func (ec *executionContext) fieldContext_Query_tasks(ctx context.Context, field 
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_tasks_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_task(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_task(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Task(rctx, fc.Args["id"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Task)
+	fc.Result = res
+	return ec.marshalNTask2ᚖgithubᚗcomᚋAI1411ᚋgoᚑpsql_grpc_gqlᚋgraphᚋmodelᚐTask(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_task(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Task_id(ctx, field)
+			case "title":
+				return ec.fieldContext_Task_title(ctx, field)
+			case "description":
+				return ec.fieldContext_Task_description(ctx, field)
+			case "dueDate":
+				return ec.fieldContext_Task_dueDate(ctx, field)
+			case "completed":
+				return ec.fieldContext_Task_completed(ctx, field)
+			case "user_id":
+				return ec.fieldContext_Task_user_id(ctx, field)
+			case "status":
+				return ec.fieldContext_Task_status(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Task_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Task_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Task", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_task_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -4168,6 +4428,50 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(ctx context.Conte
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputChangePasswordInput(ctx context.Context, obj interface{}) (model.ChangePasswordInput, error) {
+	var it model.ChangePasswordInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"id", "old_password", "new_password"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "old_password":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("old_password"))
+			it.OldPassword, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "new_password":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("new_password"))
+			it.NewPassword, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputCreateTaskInput(ctx context.Context, obj interface{}) (model.CreateTaskInput, error) {
 	var it model.CreateTaskInput
 	asMap := map[string]interface{}{}
@@ -4448,6 +4752,34 @@ func (ec *executionContext) unmarshalInputUpdateUserInput(ctx context.Context, o
 
 // region    **************************** object.gotpl ****************************
 
+var changePasswordResponseImplementors = []string{"ChangePasswordResponse"}
+
+func (ec *executionContext) _ChangePasswordResponse(ctx context.Context, sel ast.SelectionSet, obj *model.ChangePasswordResponse) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, changePasswordResponseImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ChangePasswordResponse")
+		case "password":
+
+			out.Values[i] = ec._ChangePasswordResponse_password(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var mutationImplementors = []string{"Mutation"}
 
 func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -4516,6 +4848,15 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_deleteUser(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "changePassword":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_changePassword(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
@@ -4662,6 +5003,29 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_tasks(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "task":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_task(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -5211,6 +5575,25 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNChangePasswordInput2githubᚗcomᚋAI1411ᚋgoᚑpsql_grpc_gqlᚋgraphᚋmodelᚐChangePasswordInput(ctx context.Context, v interface{}) (model.ChangePasswordInput, error) {
+	res, err := ec.unmarshalInputChangePasswordInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNChangePasswordResponse2githubᚗcomᚋAI1411ᚋgoᚑpsql_grpc_gqlᚋgraphᚋmodelᚐChangePasswordResponse(ctx context.Context, sel ast.SelectionSet, v model.ChangePasswordResponse) graphql.Marshaler {
+	return ec._ChangePasswordResponse(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNChangePasswordResponse2ᚖgithubᚗcomᚋAI1411ᚋgoᚑpsql_grpc_gqlᚋgraphᚋmodelᚐChangePasswordResponse(ctx context.Context, sel ast.SelectionSet, v *model.ChangePasswordResponse) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ChangePasswordResponse(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNCreateTaskInput2githubᚗcomᚋAI1411ᚋgoᚑpsql_grpc_gqlᚋgraphᚋmodelᚐCreateTaskInput(ctx context.Context, v interface{}) (model.CreateTaskInput, error) {

@@ -14,3 +14,6 @@ gen-task-proto:
 
 test:
 	richgo test -v ./...
+
+gqlgen:
+	go get github.com/99designs/gqlgen@v0.17.17 && go run github.com/99designs/gqlgen && go mod tidy

@@ -5,6 +5,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/AI1411/go-psql_grpc_gql/graph/generated"
 	"github.com/AI1411/go-psql_grpc_gql/graph/model"
@@ -105,6 +106,11 @@ func (r *queryResolver) Tasks(ctx context.Context, input *model.ListTaskInput) (
 		}
 	}
 	return response, nil
+}
+
+// Task is the resolver for the task field.
+func (r *queryResolver) Task(ctx context.Context, id int) (*model.Task, error) {
+	panic(fmt.Errorf("not implemented: Task - task"))
 }
 
 // Query returns generated.QueryResolver implementation.
