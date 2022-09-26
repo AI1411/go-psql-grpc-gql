@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"errors"
+	"time"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -20,6 +21,8 @@ type Task struct {
 	Completed   bool
 	UserID      uint32
 	Status      string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 type TaskRepository struct {
@@ -43,6 +46,8 @@ func (r *TaskRepository) ListTasks(
 	baseQuery = addWhereEq(baseQuery, "completed", in.Completed)
 	baseQuery = addWhereEq(baseQuery, "user_id", in.UserId)
 	baseQuery = addWhereEq(baseQuery, "status", in.Status)
+	baseQuery = addWhereGte(baseQuery, "created_at", in.CreatedAtFrom)
+	baseQuery = addWhereLte(baseQuery, "created_at", in.CreatedAtTo)
 	baseQuery.Find(&tasks)
 
 	res := make([]*grpc.Task, len(tasks))
@@ -55,6 +60,8 @@ func (r *TaskRepository) ListTasks(
 			Completed:   task.Completed,
 			UserId:      task.UserID,
 			Status:      task.Status,
+			CreatedAt:   task.CreatedAt.String(),
+			UpdatedAt:   task.UpdatedAt.String(),
 		}
 	}
 

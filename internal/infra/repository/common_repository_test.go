@@ -15,6 +15,7 @@ import (
 func initDBForTests(ctx context.Context, t *testing.T, client *db.Client) {
 	require.NoError(t, client.Conn(ctx).Exec(`TRUNCATE TABLE public.tests RESTART IDENTITY;`).Error)
 	require.NoError(t, client.Conn(ctx).Exec(`TRUNCATE TABLE public.users RESTART IDENTITY;`).Error)
+	require.NoError(t, client.Conn(ctx).Exec(`TRUNCATE TABLE public.tasks RESTART IDENTITY;`).Error)
 }
 
 func initializeForRepositoryTest(t *testing.T) (context.Context, *db.Client) {
