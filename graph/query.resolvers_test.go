@@ -1,49 +1,15 @@
 package graph_test
 
 import (
-	"log"
-	"os"
+	"context"
 	"testing"
 
-	gqclient "github.com/99designs/gqlgen/client"
-	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/stretchr/testify/assert"
-
-	"github.com/AI1411/go-psql_grpc_gql/config"
-	"github.com/AI1411/go-psql_grpc_gql/db"
-	"github.com/AI1411/go-psql_grpc_gql/graph"
-	"github.com/AI1411/go-psql_grpc_gql/graph/generated"
-	"github.com/AI1411/go-psql_grpc_gql/internal/infra/logger"
-	"github.com/AI1411/go-psql_grpc_gql/internal/infra/repository"
-	"github.com/AI1411/go-psql_grpc_gql/server"
+	"github.com/stretchr/testify/require"
 )
 
 func TestQueryResolver_Tasks(t *testing.T) {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8081"
-	}
-
-	configPath := "../config/config"
-	cfg, err := config.GetConfig(configPath)
-	if err != nil {
-		log.Fatalf("Loading config: %v", err)
-	}
-	zapLogger, _ := logger.NewLogger(true)
-	client, _ := db.NewClient(cfg, zapLogger)
-	tesRepo := repository.NewTestRepository(client)
-	userRepo := repository.NewUserRepository(client)
-	taskRepo := repository.NewTaskRepository(client)
-	testServer := server.NewTestServer(tesRepo)
-	userServer := server.NewUserServer(userRepo)
-	taskServer := server.NewTaskServer(taskRepo)
-
-	srv := gqclient.New(handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{
-		TestServer: testServer,
-		UserServer: userServer,
-		TaskServer: taskServer,
-	}})))
-
+	srv, client := NewGqlServer()
 	q := `query ListTasks {
 			  tasks(input: {
 				title: "title"
@@ -53,6 +19,10 @@ func TestQueryResolver_Tasks(t *testing.T) {
 			  }
 			}
 		`
+	initDBForTests(context.Background(), t, client)
+	ctx := context.Background()
+	require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tasks ("title","description","due_date","completed","user_id", "status", "created_at", "updated_at") VALUES ('title','test','2022-09-10 08:47:22',false,1, 'waiting','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
+	require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.tasks ("title","description","due_date","completed","user_id", "status", "created_at", "updated_at") VALUES ('task','desc','2022-09-22 08:47:22',true,2, 'done','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
 
 	var resp map[string]interface{}
 	srv.MustPost(q, &resp)
