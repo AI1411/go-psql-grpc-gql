@@ -40,7 +40,7 @@ func (r *TaskRepository) ListTasks(
 ) (*grpc.ListTasksResponse, error) {
 	var tasks []Task
 	baseQuery := r.dbClient.Conn(ctx)
-	baseQuery = addWhereLike(baseQuery, "title", in.Title)
+	baseQuery = addWhereEq(baseQuery, "title", in.Title)
 	baseQuery = addWhereLte(baseQuery, "due_date", in.DueDateTo)
 	baseQuery = addWhereGte(baseQuery, "due_date", in.DueDateFrom)
 	baseQuery = addWhereEq(baseQuery, "completed", in.Completed)

@@ -11,10 +11,10 @@ type Task {
 }
 
 input ListTaskInput {
-    title: String!
+    title: String
     completed: Boolean
     user_id: Uint32
-    status: String!
+    status: String
 }
 
 input CreateTaskInput {

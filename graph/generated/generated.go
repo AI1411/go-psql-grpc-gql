@@ -523,10 +523,10 @@ var sources = []*ast.Source{
 }
 
 input ListTaskInput {
-    title: String!
+    title: String
     completed: Boolean
     user_id: Uint32
-    status: String!
+    status: String
 }
 
 input CreateTaskInput {
@@ -4622,7 +4622,7 @@ func (ec *executionContext) unmarshalInputListTaskInput(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("title"))
-			it.Title, err = ec.unmarshalNString2string(ctx, v)
+			it.Title, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4646,7 +4646,7 @@ func (ec *executionContext) unmarshalInputListTaskInput(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
-			it.Status, err = ec.unmarshalNString2string(ctx, v)
+			it.Status, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}

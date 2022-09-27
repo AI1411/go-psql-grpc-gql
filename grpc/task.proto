@@ -47,14 +47,14 @@ message GetTaskResponse {
 }
 
 message ListTasksRequest {
-  string title = 1;
-  string due_date_from = 2;
-  string due_date_to = 3;
+  optional string title = 1;
+  optional string due_date_from = 2;
+  optional string due_date_to = 3;
   optional bool completed = 4;
   optional uint32 user_id = 5;
-  string status = 6;
-  string created_at_from = 7;
-  string created_at_to = 8;
+  optional string status = 6;
+  optional string created_at_from = 7;
+  optional string created_at_to = 8;
 }
 
 message ListTasksResponse {

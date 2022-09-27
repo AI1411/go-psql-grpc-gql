@@ -99,10 +99,14 @@ func (r *queryResolver) Tasks(ctx context.Context, input *model.ListTaskInput) (
 	response := make([]*model.Task, len(task.Tasks))
 	for i, task := range task.Tasks {
 		response[i] = &model.Task{
-			ID:        int(task.Id),
-			Title:     task.Title,
-			Completed: task.Completed,
-			CreatedAt: task.CreatedAt,
+			ID:          int(task.Id),
+			Title:       task.Title,
+			Description: task.Description,
+			DueDate:     task.DueDate,
+			Status:      task.Status,
+			Completed:   task.Completed,
+			UserID:      int(task.UserId),
+			CreatedAt:   task.CreatedAt,
 		}
 	}
 	return response, nil
