@@ -5,7 +5,12 @@ package graph
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"net/http"
+
+	"github.com/99designs/gqlgen/graphql"
+	"github.com/vektah/gqlparser/v2/gqlerror"
 
 	"github.com/AI1411/go-psql_grpc_gql/graph/generated"
 	"github.com/AI1411/go-psql_grpc_gql/graph/model"
@@ -87,12 +92,20 @@ func (r *queryResolver) User(ctx context.Context, id int) (*model.User, error) {
 // Tasks is the resolver for the tasks field.
 func (r *queryResolver) Tasks(ctx context.Context, input *model.ListTaskInput) ([]*model.Task, error) {
 	task, err := r.TaskServer.ListTasks(ctx, &grpc.ListTasksRequest{
-		Title:  input.Title,
-		Status: input.Status,
-		UserId: input.UserID,
+		Title:     input.Title,
+		Status:    input.Status,
+		UserId:    input.UserID,
+		Completed: input.Completed,
 	})
 
 	if err != nil {
+		graphql.AddError(ctx, &gqlerror.Error{
+			Path:    graphql.GetPath(ctx),
+			Message: fmt.Sprintf("test %s", err),
+			Extensions: map[string]interface{}{
+				"code": http.StatusBadRequest,
+			},
+		})
 		return nil, err
 	}
 
@@ -121,3 +134,7 @@ func (r *queryResolver) Task(ctx context.Context, id int) (*model.Task, error) {
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 type queryResolver struct{ *Resolver }
+
+func (r *queryResolver) ErrorReturn(ctx context.Context) ([]*model.Task, error) {
+	return nil, errors.New("error occurred")
+}
