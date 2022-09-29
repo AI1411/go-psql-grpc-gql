@@ -39,9 +39,11 @@ func (s *Server) Handler() {
 	testRepo := repository.NewTestRepository(dbClient)
 	userRepo := repository.NewUserRepository(dbClient)
 	taskRepo := repository.NewTaskRepository(dbClient)
+	productRepo := repository.NewProductRepository(dbClient)
 	pb.RegisterTestServiceServer(server, NewTestServer(testRepo))
 	pb.RegisterUserServiceServer(server, NewUserServer(userRepo))
 	pb.RegisterTaskServiceServer(server, NewTaskServer(taskRepo))
+	pb.RegisterProductServiceServer(server, NewProductServer(productRepo))
 
 	if err := server.Serve(lis); err != nil {
 

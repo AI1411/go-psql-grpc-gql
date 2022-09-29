@@ -15,17 +15,14 @@ service ProductService {
 
 message CreateProductRequest {
   string name = 1;
-  string description = 2;
-  string price = 3;
-  string status = 4;
+  optional string description = 2;
+  uint32 price = 3;
+  optional uint32 discount_price = 4;
+  string status = 5;
 }
 
 message CreateProductResponse {
-  string id = 1;
-  string name = 2;
-  string description = 3;
-  string price = 4;
-  string status = 5;
+  Product product = 1;
 }
 
 message GetProductRequest {
@@ -33,16 +30,15 @@ message GetProductRequest {
 }
 
 message GetProductResponse {
-  string id = 1;
-  string name = 2;
-  string description = 3;
-  string price = 4;
-  string status = 5;
+  Product product = 1;
 }
 
 message ListProductsRequest {
-  string name = 1;
-  string status = 2;
+  optional string name = 1;
+  optional string status = 2;
+  optional int32 price = 3;
+  optional string created_at_from = 4;
+  optional string created_at_to = 5;
 }
 
 message ListProductsResponse {
@@ -51,18 +47,15 @@ message ListProductsResponse {
 
 message UpdateProductRequest {
   string id = 1;
-  string name = 2;
-  string description = 3;
-  string price = 4;
-  string status = 5;
+  optional string name = 2;
+  optional string description = 3;
+  optional uint32 price = 4;
+  optional uint32 discount_price = 5;
+  optional string status = 6;
 }
 
 message UpdateProductResponse {
-  string id = 1;
-  string name = 2;
-  string description = 3;
-  string price = 4;
-  string status = 5;
+  Product product = 1;
 }
 
 message DeleteProductRequest {
@@ -79,16 +72,15 @@ message ChangeProductStatusRequest {
 }
 
 message ChangeProductStatusResponse {
-  string id = 1;
-  string status = 2;
+  Product product = 1;
 }
 
 message Product {
   string id = 1;
   string name = 2;
-  string description = 3;
-  string price = 4;
-  string discount_price = 5;
+  optional string description = 3;
+  uint32 price = 4;
+  optional uint32 discount_price = 5;
   string status = 6;
   string created_at = 99;
   string updated_at = 100;
