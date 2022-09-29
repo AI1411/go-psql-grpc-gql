@@ -36,7 +36,7 @@ message GetProductResponse {
 message ListProductsRequest {
   optional string name = 1;
   optional string status = 2;
-  optional int32 price = 3;
+  optional uint32 price = 3;
   optional string created_at_from = 4;
   optional string created_at_to = 5;
 }

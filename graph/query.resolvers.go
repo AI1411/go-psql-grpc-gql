@@ -130,11 +130,53 @@ func (r *queryResolver) Task(ctx context.Context, id int) (*model.Task, error) {
 	panic(fmt.Errorf("not implemented: Task - task"))
 }
 
+// Products is the resolver for the products field.
+func (r *queryResolver) Products(ctx context.Context, input *model.ListProductInput) ([]*model.Product, error) {
+	p, err := r.ProductServer.ListProducts(ctx, &grpc.ListProductsRequest{
+		Name:          input.Name,
+		Price:         input.Price,
+		Status:        input.Status,
+		CreatedAtFrom: input.CreatedAtFrom,
+		CreatedAtTo:   input.CreatedAtTo,
+	})
+
+	if err != nil {
+		graphql.AddError(ctx, &gqlerror.Error{
+			Path:    graphql.GetPath(ctx),
+			Message: fmt.Sprintf("test %s", err),
+			Extensions: map[string]interface{}{
+				"code": http.StatusBadRequest,
+			},
+		})
+		return nil, err
+	}
+
+	response := make([]*model.Product, len(p.Products))
+	for i, product := range p.Products {
+		response[i] = &model.Product{
+			ID:        product.Id,
+			Name:      product.Name,
+			Price:     product.Price,
+			Status:    product.Status,
+			CreatedAt: product.CreatedAt,
+			UpdatedAt: product.UpdatedAt,
+		}
+	}
+
+	return response, nil
+}
+
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 type queryResolver struct{ *Resolver }
 
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
 func (r *queryResolver) ErrorReturn(ctx context.Context) ([]*model.Task, error) {
 	return nil, errors.New("error occurred")
 }

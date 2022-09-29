@@ -30,11 +30,31 @@ type CreateUserInput struct {
 	Password string `json:"password"`
 }
 
+type ListProductInput struct {
+	Name          *string `json:"name"`
+	Price         *uint32 `json:"price"`
+	DiscountPrice *uint32 `json:"discountPrice"`
+	Status        *string `json:"status"`
+	CreatedAtFrom *string `json:"createdAtFrom"`
+	CreatedAtTo   *string `json:"createdAtTo"`
+}
+
 type ListTaskInput struct {
 	Title     *string `json:"title"`
 	Completed *bool   `json:"completed"`
 	UserID    *uint32 `json:"user_id"`
 	Status    *string `json:"status"`
+}
+
+type Product struct {
+	ID            string  `json:"id"`
+	Name          string  `json:"name"`
+	Description   *string `json:"description"`
+	Price         uint32  `json:"price"`
+	DiscountPrice *uint32 `json:"discountPrice"`
+	Status        string  `json:"status"`
+	CreatedAt     string  `json:"createdAt"`
+	UpdatedAt     string  `json:"updatedAt"`
 }
 
 type Task struct {

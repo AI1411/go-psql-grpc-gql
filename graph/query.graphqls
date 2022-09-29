@@ -7,4 +7,6 @@ type Query {
 
     tasks(input: ListTaskInput): [Task!]!
     task(id: Int!): Task!
+
+    products(input: ListProductInput): [Product!]!
 }

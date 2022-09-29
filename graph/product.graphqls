@@ -1,0 +1,19 @@
+type Product {
+    id: ID!
+    name: String!
+    description: String
+    price: Uint32!
+    discountPrice: Uint32
+    status: String!
+    createdAt: String!
+    updatedAt: String!
+}
+
+input ListProductInput {
+    name: String
+    price: Uint32
+    discountPrice: Uint32
+    status: String
+    createdAtFrom: String
+    createdAtTo: String
+}

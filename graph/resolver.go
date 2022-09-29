@@ -9,7 +9,8 @@ import (
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	TestServer *server.TestServer
-	UserServer *server.UserServer
-	TaskServer *server.TaskServer
+	TestServer    *server.TestServer
+	UserServer    *server.UserServer
+	TaskServer    *server.TaskServer
+	ProductServer *server.ProductServer
 }

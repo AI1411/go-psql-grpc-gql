@@ -49,6 +49,8 @@ func (r *ProductRepository) ListProducts(
 			Price:         product.Price,
 			DiscountPrice: product.DiscountPrice,
 			Status:        product.Status,
+			CreatedAt:     product.CreatedAt.String(),
+			UpdatedAt:     product.UpdatedAt.String(),
 		}
 	}
 
