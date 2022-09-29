@@ -1,3 +1,4 @@
+create schema if not exists public;
 create table if not exists public.tests
 (
     id   serial PRIMARY KEY,

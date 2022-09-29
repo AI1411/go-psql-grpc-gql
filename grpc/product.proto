@@ -1,0 +1,95 @@
+syntax = 'proto3';
+
+option go_package = '/grpc';
+
+package product.v1;
+
+service ProductService {
+  rpc CreateProduct(CreateProductRequest) returns (CreateProductResponse) {}
+  rpc GetProduct(GetProductRequest) returns (GetProductResponse) {}
+  rpc ListProducts(ListProductsRequest) returns (ListProductsResponse) {}
+  rpc UpdateProduct(UpdateProductRequest) returns (UpdateProductResponse) {}
+  rpc DeleteProduct(DeleteProductRequest) returns (DeleteProductResponse) {}
+  rpc ChangeStatus(ChangeProductStatusRequest) returns (ChangeProductStatusResponse) {}
+}
+
+message CreateProductRequest {
+  string name = 1;
+  string description = 2;
+  string price = 3;
+  string status = 4;
+}
+
+message CreateProductResponse {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string price = 4;
+  string status = 5;
+}
+
+message GetProductRequest {
+  string id = 1;
+}
+
+message GetProductResponse {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string price = 4;
+  string status = 5;
+}
+
+message ListProductsRequest {
+  string name = 1;
+  string status = 2;
+}
+
+message ListProductsResponse {
+  repeated Product products = 1;
+}
+
+message UpdateProductRequest {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string price = 4;
+  string status = 5;
+}
+
+message UpdateProductResponse {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string price = 4;
+  string status = 5;
+}
+
+message DeleteProductRequest {
+  string id = 1;
+}
+
+message DeleteProductResponse {
+  string id = 1;
+}
+
+message ChangeProductStatusRequest {
+  string id = 1;
+  string status = 2;
+}
+
+message ChangeProductStatusResponse {
+  string id = 1;
+  string status = 2;
+}
+
+message Product {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string price = 4;
+  string discount_price = 5;
+  string status = 6;
+  string created_at = 99;
+  string updated_at = 100;
+}
