@@ -154,12 +154,14 @@ func (r *queryResolver) Products(ctx context.Context, input *model.ListProductIn
 	response := make([]*model.Product, len(p.Products))
 	for i, product := range p.Products {
 		response[i] = &model.Product{
-			ID:        product.Id,
-			Name:      product.Name,
-			Price:     product.Price,
-			Status:    product.Status,
-			CreatedAt: product.CreatedAt,
-			UpdatedAt: product.UpdatedAt,
+			ID:            product.Id,
+			Name:          product.Name,
+			Description:   product.Description,
+			Price:         product.Price,
+			DiscountPrice: product.DiscountPrice,
+			Status:        product.Status,
+			CreatedAt:     product.CreatedAt,
+			UpdatedAt:     product.UpdatedAt,
 		}
 	}
 

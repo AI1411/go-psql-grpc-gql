@@ -23,6 +23,7 @@ func initDBForTests(ctx context.Context, t *testing.T, client *db.Client) {
 	require.NoError(t, client.Conn(ctx).Exec(`TRUNCATE TABLE public.tests RESTART IDENTITY;`).Error)
 	require.NoError(t, client.Conn(ctx).Exec(`TRUNCATE TABLE public.users RESTART IDENTITY;`).Error)
 	require.NoError(t, client.Conn(ctx).Exec(`TRUNCATE TABLE public.tasks RESTART IDENTITY;`).Error)
+	require.NoError(t, client.Conn(ctx).Exec(`TRUNCATE TABLE public.products RESTART IDENTITY;`).Error)
 }
 
 func NewGqlServer() (*gqclient.Client, *db.Client) {
@@ -39,10 +40,13 @@ func NewGqlServer() (*gqclient.Client, *db.Client) {
 	zapLogger, _ := logger.NewLogger(true)
 	client, _ := db.NewClient(cfg, zapLogger)
 	taskRepo := repository.NewTaskRepository(client)
+	productRepo := repository.NewProductRepository(client)
 	taskServer := server.NewTaskServer(taskRepo)
+	productServer := server.NewProductServer(productRepo)
 
 	srv := gqclient.New(handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{
-		TaskServer: taskServer,
+		TaskServer:    taskServer,
+		ProductServer: productServer,
 	}})))
 
 	return srv, client
