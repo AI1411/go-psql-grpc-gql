@@ -10,11 +10,10 @@ import (
 	"net/http"
 
 	"github.com/99designs/gqlgen/graphql"
-	"github.com/vektah/gqlparser/v2/gqlerror"
-
 	"github.com/AI1411/go-psql_grpc_gql/graph/generated"
 	"github.com/AI1411/go-psql_grpc_gql/graph/model"
 	"github.com/AI1411/go-psql_grpc_gql/grpc"
+	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
 // Test is the resolver for the test field.
@@ -136,6 +135,7 @@ func (r *queryResolver) Products(ctx context.Context, input *model.ListProductIn
 		Name:          input.Name,
 		Price:         input.Price,
 		Status:        input.Status,
+		UserId:        input.UserID,
 		CreatedAtFrom: input.CreatedAtFrom,
 		CreatedAtTo:   input.CreatedAtTo,
 	})
@@ -160,6 +160,7 @@ func (r *queryResolver) Products(ctx context.Context, input *model.ListProductIn
 			Price:         product.Price,
 			DiscountPrice: product.DiscountPrice,
 			Status:        product.Status,
+			UserID:        product.UserId,
 			CreatedAt:     product.CreatedAt,
 			UpdatedAt:     product.UpdatedAt,
 		}

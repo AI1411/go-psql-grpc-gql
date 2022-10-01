@@ -35,6 +35,7 @@ func TestListProduct(t *testing.T) {
 						Price:         1000,
 						DiscountPrice: helper.Uint32ToPtr(900),
 						Status:        "sale",
+						UserId:        uint32(1),
 						CreatedAt:     "2022-09-16 08:47:22.182 +0000 UTC",
 						UpdatedAt:     "2022-09-16 08:47:22.182 +0000 UTC",
 					},
@@ -45,14 +46,15 @@ func TestListProduct(t *testing.T) {
 						Price:         2000,
 						DiscountPrice: helper.Uint32ToPtr(1800),
 						Status:        "sold",
+						UserId:        uint32(1),
 						CreatedAt:     "2022-09-16 08:47:22.182 +0000 UTC",
 						UpdatedAt:     "2022-09-16 08:47:22.182 +0000 UTC",
 					},
 				},
 			},
 			setup: func(ctx context.Context, t *testing.T, client *db.Client) {
-				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status", "created_at", "updated_at") VALUES ('8c2ca258-8b16-437b-9de6-f5650c3e385e','test', 'remarks', 1000, 900, 'sale','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
-				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status", "created_at", "updated_at") VALUES ('ecdde875-0d2a-454d-ace4-8eb613bdda87','name', 'description', 2000, 1800, 'sold','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
+				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status","user_id", "created_at", "updated_at") VALUES ('8c2ca258-8b16-437b-9de6-f5650c3e385e','test', 'remarks', 1000, 900, 'sale',1,'2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
+				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status","user_id", "created_at", "updated_at") VALUES ('ecdde875-0d2a-454d-ace4-8eb613bdda87','name', 'description', 2000, 1800, 'sold',1,'2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
 			},
 		},
 		{
@@ -70,14 +72,41 @@ func TestListProduct(t *testing.T) {
 						Price:         1000,
 						DiscountPrice: helper.Uint32ToPtr(900),
 						Status:        "sale",
+						UserId:        uint32(1),
 						CreatedAt:     "2022-09-16 08:47:22.182 +0000 UTC",
 						UpdatedAt:     "2022-09-16 08:47:22.182 +0000 UTC",
 					},
 				},
 			},
 			setup: func(ctx context.Context, t *testing.T, client *db.Client) {
-				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status", "created_at", "updated_at") VALUES ('8c2ca258-8b16-437b-9de6-f5650c3e385e','test', 'remarks', 1000, 900, 'sale','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
-				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status", "created_at", "updated_at") VALUES ('ecdde875-0d2a-454d-ace4-8eb613bdda87','name', 'description', 2000, 1800, 'sold','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
+				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status","user_id", "created_at", "updated_at") VALUES ('8c2ca258-8b16-437b-9de6-f5650c3e385e','test', 'remarks', 1000, 900, 'sale',1,'2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
+				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status","user_id", "created_at", "updated_at") VALUES ('ecdde875-0d2a-454d-ace4-8eb613bdda87','name', 'description', 2000, 1800, 'sold',1,'2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
+			},
+		},
+		{
+			id:   3,
+			name: "Product 一覧正常系 UserID 検索<TID:3>",
+			in: &grpc.ListProductsRequest{
+				UserId: helper.Uint32ToPtr(2),
+			},
+			want: &grpc.ListProductsResponse{
+				Products: []*grpc.Product{
+					{
+						Id:            "ecdde875-0d2a-454d-ace4-8eb613bdda87",
+						Name:          "name",
+						Description:   helper.StringToPtr("description"),
+						Price:         2000,
+						DiscountPrice: helper.Uint32ToPtr(1800),
+						Status:        "sold",
+						UserId:        uint32(2),
+						CreatedAt:     "2022-09-16 08:47:22.182 +0000 UTC",
+						UpdatedAt:     "2022-09-16 08:47:22.182 +0000 UTC",
+					},
+				},
+			},
+			setup: func(ctx context.Context, t *testing.T, client *db.Client) {
+				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status","user_id", "created_at", "updated_at") VALUES ('8c2ca258-8b16-437b-9de6-f5650c3e385e','test', 'remarks', 1000, 900, 'sale',1,'2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
+				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status","user_id", "created_at", "updated_at") VALUES ('ecdde875-0d2a-454d-ace4-8eb613bdda87','name', 'description', 2000, 1800, 'sold',2,'2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
 			},
 		},
 	}

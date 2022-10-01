@@ -68,6 +68,7 @@ type ComplexityRoot struct {
 		Price         func(childComplexity int) int
 		Status        func(childComplexity int) int
 		UpdatedAt     func(childComplexity int) int
+		UserID        func(childComplexity int) int
 	}
 
 	Query struct {
@@ -300,6 +301,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Product.UpdatedAt(childComplexity), true
+
+	case "Product.user_id":
+		if e.complexity.Product.UserID == nil {
+			break
+		}
+
+		return e.complexity.Product.UserID(childComplexity), true
 
 	case "Query.products":
 		if e.complexity.Query.Products == nil {
@@ -589,6 +597,7 @@ var sources = []*ast.Source{
     price: Uint32!
     discountPrice: Uint32
     status: String!
+    user_id: Uint32!
     createdAt: String!
     updatedAt: String!
 }
@@ -598,6 +607,7 @@ input ListProductInput {
     price: Uint32
     discountPrice: Uint32
     status: String
+    userId: Uint32
     createdAtFrom: String
     createdAtTo: String
 }`, BuiltIn: false},
@@ -610,7 +620,7 @@ input ListProductInput {
 
     tasks(input: ListTaskInput): [Task!]!
     task(id: Int!): Task!
-    
+
     products(input: ListProductInput): [Product!]!
 }`, BuiltIn: false},
 	{Name: "../task.graphqls", Input: `type Task {
@@ -1766,6 +1776,50 @@ func (ec *executionContext) fieldContext_Product_status(ctx context.Context, fie
 	return fc, nil
 }
 
+func (ec *executionContext) _Product_user_id(ctx context.Context, field graphql.CollectedField, obj *model.Product) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Product_user_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UserID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(uint32)
+	fc.Result = res
+	return ec.marshalNUint322uint32(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Product_user_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Product",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Uint32 does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Product_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.Product) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Product_createdAt(ctx, field)
 	if err != nil {
@@ -2293,6 +2347,8 @@ func (ec *executionContext) fieldContext_Query_products(ctx context.Context, fie
 				return ec.fieldContext_Product_discountPrice(ctx, field)
 			case "status":
 				return ec.fieldContext_Product_status(ctx, field)
+			case "user_id":
+				return ec.fieldContext_Product_user_id(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Product_createdAt(ctx, field)
 			case "updatedAt":
@@ -5148,7 +5204,7 @@ func (ec *executionContext) unmarshalInputListProductInput(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "price", "discountPrice", "status", "createdAtFrom", "createdAtTo"}
+	fieldsInOrder := [...]string{"name", "price", "discountPrice", "status", "userId", "createdAtFrom", "createdAtTo"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -5184,6 +5240,14 @@ func (ec *executionContext) unmarshalInputListProductInput(ctx context.Context, 
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
 			it.Status, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "userId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
+			it.UserID, err = ec.unmarshalOUint322ᚖuint32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5529,6 +5593,13 @@ func (ec *executionContext) _Product(ctx context.Context, sel ast.SelectionSet, 
 		case "status":
 
 			out.Values[i] = ec._Product_status(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "user_id":
+
+			out.Values[i] = ec._Product_user_id(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++

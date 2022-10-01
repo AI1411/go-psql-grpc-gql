@@ -5,6 +5,7 @@ type Product {
     price: Uint32!
     discountPrice: Uint32
     status: String!
+    user_id: Uint32!
     createdAt: String!
     updatedAt: String!
 }
@@ -14,6 +15,7 @@ input ListProductInput {
     price: Uint32
     discountPrice: Uint32
     status: String
+    userId: Uint32
     createdAtFrom: String
     createdAtTo: String
 }

@@ -15,6 +15,7 @@ type Product struct {
 	Price         uint32    `gorm:"price"`
 	DiscountPrice *uint32   `gorm:"discount_price"`
 	Status        string    `gorm:"status"`
+	UserID        uint32    `gorm:"user_id"`
 	CreatedAt     time.Time `gorm:"created_at"`
 	UpdatedAt     time.Time `gorm:"updated_at"`
 }
@@ -36,6 +37,7 @@ func (r *ProductRepository) ListProducts(
 	baseQuery := r.dbClient.Conn(ctx)
 	baseQuery = addWhereEq(baseQuery, "name", in.Name)
 	baseQuery = addWhereEq(baseQuery, "status", in.Status)
+	baseQuery = addWhereEq(baseQuery, "user_id", in.UserId)
 	baseQuery = addWhereGte(baseQuery, "created_at", in.CreatedAtFrom)
 	baseQuery = addWhereLte(baseQuery, "created_at", in.CreatedAtTo)
 	baseQuery.Find(&products)
@@ -49,6 +51,7 @@ func (r *ProductRepository) ListProducts(
 			Price:         product.Price,
 			DiscountPrice: product.DiscountPrice,
 			Status:        product.Status,
+			UserId:        product.UserID,
 			CreatedAt:     product.CreatedAt.String(),
 			UpdatedAt:     product.UpdatedAt.String(),
 		}

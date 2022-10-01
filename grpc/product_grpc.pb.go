@@ -24,6 +24,7 @@ type ProductServiceClient interface {
 	UpdateProduct(ctx context.Context, in *UpdateProductRequest, opts ...grpc.CallOption) (*UpdateProductResponse, error)
 	DeleteProduct(ctx context.Context, in *DeleteProductRequest, opts ...grpc.CallOption) (*DeleteProductResponse, error)
 	ChangeStatus(ctx context.Context, in *ChangeProductStatusRequest, opts ...grpc.CallOption) (*ChangeProductStatusResponse, error)
+	SetDiscountPriceByUser(ctx context.Context, in *SetDiscountPriceByUserRequest, opts ...grpc.CallOption) (*SetDiscountPriceByUserResponse, error)
 }
 
 type productServiceClient struct {
@@ -88,6 +89,15 @@ func (c *productServiceClient) ChangeStatus(ctx context.Context, in *ChangeProdu
 	return out, nil
 }
 
+func (c *productServiceClient) SetDiscountPriceByUser(ctx context.Context, in *SetDiscountPriceByUserRequest, opts ...grpc.CallOption) (*SetDiscountPriceByUserResponse, error) {
+	out := new(SetDiscountPriceByUserResponse)
+	err := c.cc.Invoke(ctx, "/product.v1.ProductService/SetDiscountPriceByUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProductServiceServer is the server API for ProductService service.
 // All implementations must embed UnimplementedProductServiceServer
 // for forward compatibility
@@ -98,6 +108,7 @@ type ProductServiceServer interface {
 	UpdateProduct(context.Context, *UpdateProductRequest) (*UpdateProductResponse, error)
 	DeleteProduct(context.Context, *DeleteProductRequest) (*DeleteProductResponse, error)
 	ChangeStatus(context.Context, *ChangeProductStatusRequest) (*ChangeProductStatusResponse, error)
+	SetDiscountPriceByUser(context.Context, *SetDiscountPriceByUserRequest) (*SetDiscountPriceByUserResponse, error)
 	mustEmbedUnimplementedProductServiceServer()
 }
 
@@ -122,6 +133,9 @@ func (UnimplementedProductServiceServer) DeleteProduct(context.Context, *DeleteP
 }
 func (UnimplementedProductServiceServer) ChangeStatus(context.Context, *ChangeProductStatusRequest) (*ChangeProductStatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangeStatus not implemented")
+}
+func (UnimplementedProductServiceServer) SetDiscountPriceByUser(context.Context, *SetDiscountPriceByUserRequest) (*SetDiscountPriceByUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetDiscountPriceByUser not implemented")
 }
 func (UnimplementedProductServiceServer) mustEmbedUnimplementedProductServiceServer() {}
 
@@ -244,6 +258,24 @@ func _ProductService_ChangeStatus_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProductService_SetDiscountPriceByUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetDiscountPriceByUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductServiceServer).SetDiscountPriceByUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/product.v1.ProductService/SetDiscountPriceByUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductServiceServer).SetDiscountPriceByUser(ctx, req.(*SetDiscountPriceByUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProductService_ServiceDesc is the grpc.ServiceDesc for ProductService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -274,6 +306,10 @@ var ProductService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ChangeStatus",
 			Handler:    _ProductService_ChangeStatus_Handler,
+		},
+		{
+			MethodName: "SetDiscountPriceByUser",
+			Handler:    _ProductService_SetDiscountPriceByUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -35,6 +35,7 @@ type ListProductInput struct {
 	Price         *uint32 `json:"price"`
 	DiscountPrice *uint32 `json:"discountPrice"`
 	Status        *string `json:"status"`
+	UserID        *uint32 `json:"userId"`
 	CreatedAtFrom *string `json:"createdAtFrom"`
 	CreatedAtTo   *string `json:"createdAtTo"`
 }
@@ -53,6 +54,7 @@ type Product struct {
 	Price         uint32  `json:"price"`
 	DiscountPrice *uint32 `json:"discountPrice"`
 	Status        string  `json:"status"`
+	UserID        uint32  `json:"user_id"`
 	CreatedAt     string  `json:"createdAt"`
 	UpdatedAt     string  `json:"updatedAt"`
 }

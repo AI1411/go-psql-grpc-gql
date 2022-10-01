@@ -223,6 +223,14 @@
                 </li>
               
                 <li>
+                  <a href="#product.v1.SetDiscountPriceByUserRequest"><span class="badge">M</span>SetDiscountPriceByUserRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#product.v1.SetDiscountPriceByUserResponse"><span class="badge">M</span>SetDiscountPriceByUserResponse</a>
+                </li>
+              
+                <li>
                   <a href="#product.v1.UpdateProductRequest"><span class="badge">M</span>UpdateProductRequest</a>
                 </li>
               
@@ -524,6 +532,13 @@
                   <td><p> </p></td>
                 </tr>
               
+                <tr>
+                  <td>user_id</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td>optional</td>
+                  <td><p> </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -608,6 +623,13 @@
                 </tr>
               
                 <tr>
+                  <td>user_id</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
                   <td>created_at</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
@@ -617,6 +639,54 @@
                 <tr>
                   <td>updated_at</td>
                   <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="product.v1.SetDiscountPriceByUserRequest">SetDiscountPriceByUserRequest</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>user_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="product.v1.SetDiscountPriceByUserResponse">SetDiscountPriceByUserResponse</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>product</td>
+                  <td><a href="#product.v1.Product">Product</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
@@ -764,6 +834,13 @@
                 <td>ChangeStatus</td>
                 <td><a href="#product.v1.ChangeProductStatusRequest">ChangeProductStatusRequest</a></td>
                 <td><a href="#product.v1.ChangeProductStatusResponse">ChangeProductStatusResponse</a></td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>SetDiscountPriceByUser</td>
+                <td><a href="#product.v1.SetDiscountPriceByUserRequest">SetDiscountPriceByUserRequest</a></td>
+                <td><a href="#product.v1.SetDiscountPriceByUserResponse">SetDiscountPriceByUserResponse</a></td>
                 <td><p></p></td>
               </tr>
             

@@ -33,6 +33,7 @@ func TestQueryResolver_Products(t *testing.T) {
 				name
 				description
 				status
+				user_id
 				price
 				discountPrice
 			  }
@@ -44,14 +45,15 @@ func TestQueryResolver_Products(t *testing.T) {
 						"name":          "sale",
 						"description":   "remarks",
 						"status":        "sale",
+						"user_id":       "1",
 						"price":         float64(1000),
 						"discountPrice": float64(900),
 					},
 				},
 			},
 			setup: func(ctx context.Context, t *testing.T, client *db.Client) {
-				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status", "created_at", "updated_at") VALUES ('8c2ca258-8b16-437b-9de6-f5650c3e385e','sale', 'remarks', 1000, 900, 'sale','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
-				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status", "created_at", "updated_at") VALUES ('ecdde875-0d2a-454d-ace4-8eb613bdda87','name', 'description', 2000, 1800, 'sold','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
+				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status","user_id", "created_at", "updated_at") VALUES ('8c2ca258-8b16-437b-9de6-f5650c3e385e','sale', 'remarks', 1000, 900, 'sale',1,'2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
+				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status","user_id", "created_at", "updated_at") VALUES ('ecdde875-0d2a-454d-ace4-8eb613bdda87','name', 'description', 2000, 1800, 'sold',1,'2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
 			},
 		},
 		{
@@ -65,6 +67,7 @@ func TestQueryResolver_Products(t *testing.T) {
 				name
 				description
 				status
+				user_id
 				price
 				discountPrice
 			  }
@@ -76,14 +79,15 @@ func TestQueryResolver_Products(t *testing.T) {
 						"name":          "name",
 						"description":   "description",
 						"status":        "sold",
+						"user_id":       "1",
 						"price":         float64(2000),
 						"discountPrice": float64(1800),
 					},
 				},
 			},
 			setup: func(ctx context.Context, t *testing.T, client *db.Client) {
-				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status", "created_at", "updated_at") VALUES ('8c2ca258-8b16-437b-9de6-f5650c3e385e','test', 'remarks', 1000, 900, 'sale','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
-				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status", "created_at", "updated_at") VALUES ('ecdde875-0d2a-454d-ace4-8eb613bdda87','name', 'description', 2000, 1800, 'sold','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
+				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status","user_id", "created_at", "updated_at") VALUES ('8c2ca258-8b16-437b-9de6-f5650c3e385e','test', 'remarks', 1000, 900, 'sale',1,'2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
+				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status","user_id", "created_at", "updated_at") VALUES ('ecdde875-0d2a-454d-ace4-8eb613bdda87','name', 'description', 2000, 1800, 'sold',1,'2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
 			},
 		},
 		{
@@ -97,6 +101,7 @@ func TestQueryResolver_Products(t *testing.T) {
 				name
 				description
 				status
+				user_id
 				price
 				discountPrice
 			  }
@@ -108,14 +113,15 @@ func TestQueryResolver_Products(t *testing.T) {
 						"name":          "name",
 						"description":   "description",
 						"status":        "sold",
+						"user_id":       "1",
 						"price":         float64(2000),
 						"discountPrice": float64(1800),
 					},
 				},
 			},
 			setup: func(ctx context.Context, t *testing.T, client *db.Client) {
-				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status", "created_at", "updated_at") VALUES ('8c2ca258-8b16-437b-9de6-f5650c3e385e','test', 'remarks', 1000, 900, 'sale','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
-				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status", "created_at", "updated_at") VALUES ('ecdde875-0d2a-454d-ace4-8eb613bdda87','name', 'description', 2000, 1800, 'sold','2022-11-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
+				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status","user_id", "created_at", "updated_at") VALUES ('8c2ca258-8b16-437b-9de6-f5650c3e385e','test', 'remarks', 1000, 900, 'sale',1,'2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
+				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status","user_id", "created_at", "updated_at") VALUES ('ecdde875-0d2a-454d-ace4-8eb613bdda87','name', 'description', 2000, 1800, 'sold',1,'2022-11-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
 			},
 		},
 		{
@@ -129,6 +135,7 @@ func TestQueryResolver_Products(t *testing.T) {
 				name
 				description
 				status
+				user_id
 				price
 				discountPrice
 			  }
@@ -140,14 +147,15 @@ func TestQueryResolver_Products(t *testing.T) {
 						"name":          "test",
 						"description":   "remarks",
 						"status":        "sale",
+						"user_id":       "1",
 						"price":         float64(1000),
 						"discountPrice": float64(900),
 					},
 				},
 			},
 			setup: func(ctx context.Context, t *testing.T, client *db.Client) {
-				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status", "created_at", "updated_at") VALUES ('8c2ca258-8b16-437b-9de6-f5650c3e385e','test', 'remarks', 1000, 900, 'sale','2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
-				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status", "created_at", "updated_at") VALUES ('ecdde875-0d2a-454d-ace4-8eb613bdda87','name', 'description', 2000, 1800, 'sold','2022-11-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
+				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status","user_id", "created_at", "updated_at") VALUES ('8c2ca258-8b16-437b-9de6-f5650c3e385e','test', 'remarks', 1000, 900, 'sale',1,'2022-09-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
+				require.NoError(t, client.Conn(ctx).Exec(`INSERT INTO public.products ("id", "name", "description","price","discount_price","status","user_id", "created_at", "updated_at") VALUES ('ecdde875-0d2a-454d-ace4-8eb613bdda87','name', 'description', 2000, 1800, 'sold',1,'2022-11-16 08:47:22.182','2022-09-16 08:47:22.182' )`).Error)
 			},
 		},
 	}
